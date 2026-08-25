@@ -122,7 +122,7 @@
 - **Files changed:** `scripts/run.sh`, `scripts/run.ps1`, `scripts/verify.sh`, `scripts/verify.ps1`, `README.md`, `tests/OTP.Web.Tests/DeveloperExperienceScriptTests.cs` และเอกสาร migration/plan
 - **Rollback:** revert commit ของ Step 5; runtime migration และ tests จาก Step 4 ยังคงอยู่
 
-## 2026-08-25 — Step 6: Cross-Platform Verification และส่งมอบ (กำลังดำเนินการ)
+## 2026-08-25 — Step 6: Cross-Platform Verification และส่งมอบ (เสร็จสิ้น)
 
 - **Approval:** ผู้ใช้ตอบ “เริ่ม” หลังได้รับ approval gate สำหรับ Step 6
 - **Starting state:** branch `migration/aspnet-core-net10` ที่ commit `c3994dc`; migration worktree และ `main` สะอาด
@@ -137,3 +137,14 @@
 - **Workflow preparation:** เพิ่ม `.github/workflows/windows-verify.yml` สำหรับ `windows-latest`; permissions `contents: read`, timeout 20 นาที, branch-specific/manual triggers, PowerShell verify และ runtime probes 11 routes + logo พร้อม process-tree cleanup
 - **Action provenance:** ตรวจ releases/tags ทางการและ pin `actions/checkout` v6.0.2 ที่ `de0fac2e...` กับ `actions/setup-dotnet` v6.0.0 ที่ `a98b5685...`
 - **Pre-push checks:** YAML parse ผ่าน, `git diff --check` ผ่าน, largest tracked blob ประมาณ 7.9 MB และ targeted history scan ไม่พบ credential/private key; `connectionStrings` ที่พบเป็น commented Visual Studio transform examples เท่านั้น
+- **Workflow commit:** `481dfdb` (`ci: verify migration on Windows`) เพิ่ม workflow และบันทึก approval/decision โดยไม่แก้ production code
+- **Push diagnostics:** HTTPS push รอบแรกหยุดก่อนส่งข้อมูลเพราะเครื่องไม่มี GitHub HTTPS credential; ยืนยัน SSH authentication เป็นผู้ใช้ `Patllom`, ตรวจ object database ด้วย `git fsck`, ทดสอบ `git push --dry-run` แล้ว push ซ้ำผ่าน SSH พร้อม keepalive
+- **External write result:** push สำเร็จเฉพาะ branch `migration/aspnet-core-net10` ไป `origin`; ไม่มีการแก้ `main`, merge, tag, deployment หรือ release
+- **Windows workflow evidence:** GitHub Actions run `32839304728` สำหรับ commit `481dfdbd9d039147ec15ec6546fe0d0c04bd01d8` จบสถานะ `success` เมื่อ 2026-08-25 เวลา 10:52:27 UTC; job ใช้เวลาประมาณ 1 นาที 3 วินาที
+- **Fresh Windows environment:** GitHub-hosted `windows-latest` รายงาน Windows Server 2025 Datacenter 64-bit, OS version 10.0.26100, RID `win-x64`, .NET SDK 10.0.400, MSBuild 18.9.6 และ .NET runtime 10.0.11
+- **Fresh Windows verify:** `powershell -ExecutionPolicy Bypass -File scripts/verify.ps1` สำเร็จ; restore ผ่าน, build 0 warnings/0 errors และ full suite ผ่าน 26/26, 0 failed, 0 skipped
+- **Fresh Windows runtime:** `scripts/run.ps1` เริ่ม Kestrel ใน Production; compatibility routes 11/11 ตอบ HTTP 200 `text/html; charset=utf-8`; legacy logo ตอบ HTTP 200 `image/png`, 30,127 bytes และ cleanup ปิด process tree สำเร็จ
+- **Platform evidence boundary:** การยืนยัน Windows x64 ใช้ Windows Server 2025 ตาม runner ที่ผู้ใช้อนุมัติ ไม่ได้รันตรงบน Windows 11 client edition; ความแตกต่างนี้ไม่ขวาง acceptance ของ ASP.NET Core/.NET 10 runtime แต่ต้องทำ manual smoke เพิ่มหากต้องการรับรอง edition นั้นโดยชื่อ
+- **Final macOS re-verification:** หลังบันทึกผล Windows รัน `scripts/verify.sh` ซ้ำด้วย SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors และ tests 26/26 ผ่าน
+- **Documentation completeness:** `git diff --check` ผ่าน; matches ของ `NOT RUN`/`FAIL` ที่คงอยู่ใน test log ถูกระบุเป็น baseline/test-first history หรือ Windows 11 client-edition optional smoke ไม่ใช่ current acceptance failure
+- **Conclusion:** acceptance สำหรับ macOS arm64 และ Windows x64 ผ่านครบทั้ง restore/build/test/run; final branch state ต้องสะอาดและตรงกับ remote หลัง commit ส่งมอบ โดยยังคงห้าม merge/release จนกว่าผู้ใช้จะสั่งแยกต่างหาก

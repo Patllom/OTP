@@ -35,7 +35,10 @@
 | macOS run script | macOS 26.6.2 arm64 | PASS | Kestrel Production ที่ port 5190; `GET /` ตอบ 200 `text/html`, 34,837 bytes และ marker ถูกต้อง |
 | Step 6 fresh macOS verification | macOS 26.6.2 arm64 | PASS | commit `c3994dc`, SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors, tests 26/26 ผ่าน |
 | Step 6 fresh macOS runtime routes | macOS 26.6.2 arm64 | PASS | Kestrel Production port 5191; compatibility routes 11/11 ตอบ HTTP 200 `text/html`; logo ตอบ 200 `image/png` |
-| PowerShell scripts on Windows | Windows 11 x64 | NOT RUN | เครื่อง Mac ไม่มี PowerShell; platform behavior tests และ runtime verification ต้องรันใน Step 6 |
-| Windows build/test | Windows 11 x64 | NOT RUN | ต้องยืนยันใน Step 6 บน Windows หรือ CI Windows runner |
+| Final macOS re-verification after Windows evidence | macOS 26.6.2 arm64 | PASS | SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors และ full suite 26/26 ผ่าน |
+| PowerShell scripts and Windows build/test | Windows Server 2025 Datacenter x64 | PASS | GitHub Actions run `32839304728`; SDK 10.0.400, restore ผ่าน, build 0 warnings/0 errors และ tests 26/26 ผ่าน |
+| Windows runtime compatibility routes | Windows Server 2025 Datacenter x64 | PASS | Kestrel Production: compatibility routes 11/11 ตอบ HTTP 200 `text/html; charset=utf-8` |
+| Windows static logo and process cleanup | Windows Server 2025 Datacenter x64 | PASS | legacy logo ตอบ HTTP 200 `image/png`, 30,127 bytes และ `taskkill` ปิด process tree สำเร็จ |
+| Exact Windows 11 client-edition smoke | Windows 11 x64 | NOT RUN | Standard `windows-latest` x64 runner ที่อนุมัติเป็น Windows Server 2025; Windows x64 acceptance ผ่านแล้ว แต่ต้องรัน manual เพิ่มหากต้องการรับรอง client edition โดยชื่อ |
 
-กติกา: `NOT RUN` ไม่ถือว่า PASS และห้ามสรุปว่า cross-platform สมบูรณ์จนกว่า Mac และ Windows จะผ่าน build/test ตาม acceptance criteria
+กติกา: `EXPECTED FAIL`/`DIAGNOSTIC FAIL` ด้านบนเป็นหลักฐาน test-first และ defect history ไม่ใช่สถานะปัจจุบัน ส่วน `NOT RUN` ไม่ถือว่า PASS ปัจจุบัน acceptance สำหรับ macOS arm64 และ Windows x64 ผ่าน build/test/run แล้ว; รายการ Windows 11 ที่เหลือเป็น edition-specific manual smoke ไม่ใช่ runtime blocker ของ acceptance ที่ผู้ใช้อนุมัติ

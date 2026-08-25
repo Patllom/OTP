@@ -58,3 +58,5 @@
 - **การตัดสินใจ:** เพิ่ม `.github/workflows/windows-verify.yml` สำหรับ `windows-latest`, trigger เฉพาะ push ที่ branch `migration/aspnet-core-net10` และ manual dispatch, จำกัด permission เป็น `contents: read`, timeout 20 นาที และไม่มี deployment/merge/release step
 - **Supply-chain control:** pin `actions/checkout` v6.0.2 และ `actions/setup-dotnet` v6.0.0 ด้วย full commit SHA ที่ตรวจจาก repositories ทางการ
 - **Acceptance:** job ต้องรัน `scripts/verify.ps1`, ผ่าน Windows-selected script behavior tests และเปิด `scripts/run.ps1` เพื่อตรวจ 11 compatibility routes กับ static logo ก่อนปิด process tree
+- **ผลการยืนยัน:** GitHub Actions run `32839304728` ผ่านบน Windows Server 2025 Datacenter x64 ด้วย SDK 10.0.400; build 0 warnings/0 errors, tests 26/26, routes 11/11 และ static logo ผ่านทั้งหมด
+- **ขอบเขตหลักฐาน:** `windows-latest` ที่รันจริงเป็น Windows Server 2025 ไม่ใช่ Windows 11 client edition; ถือเป็น Windows x64 acceptance ตามตัวเลือกที่ผู้ใช้อนุมัติ และไม่มีผลให้ workflow ได้สิทธิ์ deploy/merge/release

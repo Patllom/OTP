@@ -367,7 +367,7 @@ Start app, request compatibility routes และหยุด process อย่�
 
 Workflow ใช้ `windows-latest`, read-only repository permission, pinned official actions, `verify.ps1` และ runtime smoke probes โดย trigger เฉพาะ migration branch หรือ manual dispatch; ห้าม deploy, merge หรือ release
 
-- [ ] **Step 3: Fresh verification บน Windows 11 x64**
+- [x] **Step 3: Fresh verification บน Windows x64 (GitHub-hosted Windows Server 2025)**
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/verify.ps1
@@ -375,11 +375,11 @@ powershell -ExecutionPolicy Bypass -File scripts/verify.ps1
 
 Expected: restore, build และ tests exit 0
 
-- [ ] **Step 4: Runtime smoke test บน Windows**
+- [x] **Step 4: Runtime smoke test บน Windows x64**
 
 รัน `scripts/run.ps1`, request `/` และ compatibility routes แล้วบันทึก SDK, OS, commit และผลลัพธ์
 
-- [ ] **Step 5: ตรวจ Git diff และ documentation completeness**
+- [x] **Step 5: ตรวจ Git diff และ documentation completeness**
 
 ```bash
 git status --short
@@ -387,9 +387,9 @@ git log --oneline --decorate -10
 rg -n "NOT RUN|FAIL" docs/migration/TEST_RESULTS.md
 ```
 
-Expected: working tree ว่างและไม่มี `NOT RUN`/`FAIL` ใน acceptance tests
+Expected: ก่อน final commit มีเฉพาะเอกสารที่ตั้งใจแก้และ `git diff --check` ผ่าน; หลัง commit working tree ต้องว่าง โดย matches ของ `NOT RUN`/`FAIL` ที่เป็น baseline/test-first history หรือ optional edition-specific smoke ต้องมีคำอธิบายชัดเจนและไม่ปะปนกับ current acceptance
 
-- [ ] **Step 6: Final commit**
+- [x] **Step 6: Final commit**
 
 ```bash
 git add docs/migration
