@@ -37,7 +37,7 @@
 
 ต้องตอบ HTTP 200 สำหรับ `/`, `/Home/Index`, `/Home/objective`, `/Home/scopeofwork`, `/Home/eventpic`, `/Home/knowledgetech`, `/Home/information`, `/Home/projectresult`, `/Home/About` และ `/Home/Contact` ตัว route matching ยังคงไม่แยกตัวพิมพ์ใหญ่เล็กตามพฤติกรรมเว็บบน Windows/ASP.NET
 
-ลิงก์ภายในจะเปลี่ยนจากการต่อ string กับ `@Url.Content("~/")` เป็น ASP.NET Core tag helpers หรือ `Url.Action` โดย URL ที่ผู้ใช้เห็นต้องคงเดิม
+เดิมวางแผนเปลี่ยนลิงก์ภายในจากการต่อ string กับ `@Url.Content("~/")` เป็น ASP.NET Core tag helpers หรือ `Url.Action` โดย URL ที่ผู้ใช้เห็นต้องคงเดิม อย่างไรก็ตาม Final Cleanup เลื่อน refactor นี้ไปเป็นงานหลัง migration ตาม D-009 เพื่อไม่ให้การเปลี่ยน link generation กระทบ URL/UI compatibility ก่อน merge
 
 ## Static files
 
@@ -66,4 +66,3 @@ Initial Git commit เป็น immutable legacy baseline ทุก Step มี 
 ## Approval workflow
 
 ผู้ดำเนินงานทำได้เฉพาะ Step ที่ผู้ใช้อนุมัติแล้ว หลัง verification ต้องอัปเดต log, รายงานผล และหยุด การถามเพื่อเริ่ม Step ถัดไปต้องเป็นข้อความแยกจากการลงมือทำ Step นั้น
-

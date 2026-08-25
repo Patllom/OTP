@@ -203,3 +203,17 @@
 - **Production contract:** เพิ่ม `docs/deployment/PRODUCTION_HTTPS.md`; public TLS/HTTP redirect/HSTS อยู่ที่ trusted edge, Kestrel อยู่ private, forwarded headers ต้องรอ deployment-specific KnownProxies/KnownNetworks และ middleware ordering
 - **Scope boundary:** ไม่ deploy, ไม่ออก certificate, ไม่เลือก hosting provider, ไม่เปิด unconditional HTTPS redirect/forwarded headers, ไม่แก้ UI หรือ `main`
 - **Rollback:** revert run wrappers, environment test, README, production contract และบันทึก Step 3 นี้; Step 1–2 จะยังอยู่ครบ
+
+## 2026-08-26 — Final Cleanup: PowerShell Session State และ PR Hygiene
+
+- **Approval:** ผู้ใช้อนุมัติ Final Cleanup หลัง independent review ไม่พบ Critical/Important และพบเฉพาะ Minor เรื่อง PR-wide whitespace, PowerShell session side effects, navigation spec gap และ PR metadata ที่ล้าสมัย
+- **Review finding:** เมื่อเรียก `run.ps1` หรือ `verify.ps1` โดยตรงใน interactive PowerShell, `Set-Location` เปลี่ยน working directory ของ caller ถาวร และ `run.ps1` ทิ้งค่า Development ไว้ใน `ASPNETCORE_ENVIRONMENT` เมื่อเดิมไม่มีค่า
+- **Test-first RED:** เพิ่ม Windows-only behavior theory ที่เรียก PowerShell wrappers จริงจาก temporary caller session แล้วอ่าน location/environment หลัง script จบ; GitHub Actions run `32882673103` fail 2/2 ตามคาด เพราะทั้ง `run` และ `verify` คง location ไว้ที่ repository แทน caller directory (suite 30 passed, 2 failed)
+- **Implementation:** `run.ps1` และ `verify.ps1` เก็บ caller location แล้วคืนค่าใน `finally`; `run.ps1` เก็บทั้งสถานะมี/ไม่มีและค่าเดิมของ `ASPNETCORE_ENVIRONMENT` แล้ว restore หลัง `dotnet run`; exit code ของ child process ยังคงถูกส่งกลับ
+- **Windows GREEN:** GitHub Actions run `32883111200` สำหรับ implementation commit `dcd87c3` จบ `success`; PowerShell verification รวม session-state regression และ compatibility route/static smoke tests ผ่านทุกขั้น
+- **macOS verification:** เรียก absolute `scripts/verify.sh` จาก `/tmp` ด้วย SDK 10.0.400; build 0 warnings/0 errors และ Debug suite ผ่าน 32/32; `dotnet test OTT.sln --configuration Release` ผ่าน 32/32 เช่นกัน
+- **Verification diagnostic:** การรัน Debug build สองคำสั่งพร้อมกันทำให้ static-web-assets cache ถูกล็อกชั่วคราว 1 รอบ; rerun full verify แบบลำดับเดียวผ่าน 32/32 จึงไม่ใช่ repository regression
+- **PR hygiene:** ลบบรรทัดว่างเกินท้าย `Program.cs`, `appsettings.json` และ `global.json` เพื่อให้ range-level `git diff --check` ผ่าน
+- **Navigation decision:** ตาม D-009 เลื่อน conversion จาก legacy URL concatenation ไป follow-up หลัง migration เพราะ links ปัจจุบัน render ได้และการเปลี่ยน link generation ก่อน merge อาจเปลี่ยน user-visible default-route URLs; follow-up ต้องเริ่มจาก rendered-link assertions
+- **Scope boundary:** ไม่แก้ controller/routes/UI/assets, ไม่อัปเดต PR description ใน code step นี้ และไม่ merge/release
+- **Rollback:** revert test commit `ee45c6a`, implementation commit `dcd87c3` และ final-cleanup documentation/whitespace commit โดย Step 1–3 ก่อนหน้ายังคงอยู่ครบ

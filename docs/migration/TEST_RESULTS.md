@@ -56,5 +56,10 @@
 | Post-review Step 3 Production override runtime | macOS 26.6.2 arm64 | PASS | run wrapper จาก `/tmp` ที่ port 5194 คง Production; หน้าแรก/logo ตอบ HTTP 200 และ port ปิดสะอาด |
 | Post-review Step 3 full macOS verification | macOS 26.6.2 arm64 | PASS | SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors, verify/solution tests ผ่าน 30/30 |
 | Post-review Step 3 Windows verification | Windows Server 2025 Datacenter x64 | PASS | GitHub Actions run `32880635141`; PowerShell restore/build/test wrapper รวม environment contract และ compatibility route smoke tests ผ่านทุกขั้น |
+| Final Cleanup PowerShell session RED | Windows Server 2025 Datacenter x64 | EXPECTED FAIL | GitHub Actions run `32882673103`; regression fail 2/2 เพราะ `run.ps1` และ `verify.ps1` ไม่คืน temporary caller location (suite 30 passed, 2 failed) |
+| Final Cleanup PowerShell session GREEN | Windows Server 2025 Datacenter x64 | PASS | GitHub Actions run `32883111200` ที่ implementation commit `dcd87c3`; session-state regression, PowerShell verification และ compatibility route/static smoke tests ผ่านทุกขั้น |
+| Final Cleanup macOS Debug verification | macOS 26.6.2 arm64 | PASS | เรียก absolute `scripts/verify.sh` จาก `/tmp`; SDK 10.0.400, build 0 warnings/0 errors และ tests 32/32 ผ่าน |
+| Final Cleanup solution Release verification | macOS 26.6.2 arm64 | PASS | `dotnet test OTT.sln --configuration Release` ค้นพบ test assembly และผ่าน 32/32 |
+| Final Cleanup sequential rerun after diagnostic lock | macOS 26.6.2 arm64 | PASS | full Debug verify แบบลำดับเดียวผ่าน 32/32; ยืนยันว่ารอบ file-lock ก่อนหน้าเกิดจาก verification สองคำสั่งเขียน `obj/Debug` พร้อมกัน |
 
 กติกา: `EXPECTED FAIL`/`DIAGNOSTIC FAIL` ด้านบนเป็นหลักฐาน test-first และ defect history ไม่ใช่สถานะปัจจุบัน ส่วน `NOT RUN` ไม่ถือว่า PASS ปัจจุบัน acceptance สำหรับ macOS arm64 และ Windows x64 ผ่าน build/test/run แล้ว; รายการ Windows 11 ที่เหลือเป็น edition-specific manual smoke ไม่ใช่ runtime blocker ของ acceptance ที่ผู้ใช้อนุมัติ

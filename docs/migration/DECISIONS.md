@@ -60,3 +60,11 @@
 - **Acceptance:** job ต้องรัน `scripts/verify.ps1`, ผ่าน Windows-selected script behavior tests และเปิด `scripts/run.ps1` เพื่อตรวจ 11 compatibility routes กับ static logo ก่อนปิด process tree
 - **ผลการยืนยัน:** GitHub Actions run `32839304728` ผ่านบน Windows Server 2025 Datacenter x64 ด้วย SDK 10.0.400; build 0 warnings/0 errors, tests 26/26, routes 11/11 และ static logo ผ่านทั้งหมด
 - **ขอบเขตหลักฐาน:** `windows-latest` ที่รันจริงเป็น Windows Server 2025 ไม่ใช่ Windows 11 client edition; ถือเป็น Windows x64 acceptance ตามตัวเลือกที่ผู้ใช้อนุมัติ และไม่มีผลให้ workflow ได้สิทธิ์ deploy/merge/release
+
+## D-009: เลื่อน navigation helper refactor ไปหลัง migration
+
+- **วันที่:** 2026-08-26
+- **สถานะ:** ผู้ใช้อนุมัติใน Final Cleanup
+- **เหตุผล:** ลิงก์เดิมใน `_LayoutMain.cshtml` render และนำทางได้ถูกต้องอยู่แล้ว ขณะที่การเปลี่ยนเป็น tag helpers หรือ `Url.Action` อาจยุบ default route หรือเปลี่ยนรูปแบบ URL ที่ผู้ใช้เห็น ซึ่งขัดกับเป้าหมายหลักของ migration ที่ต้องรักษา URL และ UI เดิม
+- **การตัดสินใจ:** คงรูปแบบ internal navigation เดิมไว้ใน migration branch และทำ helper refactor เป็นงานแยกหลัง merge โดยต้องเพิ่ม rendered-link assertions ก่อนเปลี่ยน production Razor
+- **ผลที่ตามมา:** ไม่มี runtime blocker ใน migration นี้ แต่ source ยังคงมี legacy URL-concatenation pattern ชั่วคราว; follow-up ต้องรักษาปลายทาง desktop/mobile navigation เดิมและผ่าน compatibility tests
