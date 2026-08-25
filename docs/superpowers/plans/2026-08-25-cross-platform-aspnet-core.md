@@ -81,22 +81,22 @@ Expected: commit สำเร็จและ working tree ว่าง
 - Create: `Program.cs`
 - Create: `global.json`
 - Create: `appsettings.json`
-- Remove after Git baseline: `Global.asax`, `Global.asax.cs`, `App_Start/`, `Web.config`, `Web.Debug.config`, `Web.Release.config`, `packages.config`
+- Remove after Git baseline: `Global.asax`, `Global.asax.cs`, `App_Start/`, `Web.config`, `Web.Debug.config`, `Web.Release.config`, `packages.config`, `Properties/AssemblyInfo.cs`
 
 **Interfaces:**
 - Consumes: route requirement จาก spec และ legacy baseline commit
 - Produces: `public partial class Program`, ASP.NET Core service container และ conventional MVC route
 
-- [ ] **Step 1: ตรวจหรือเตรียม workspace-local .NET 10 SDK โดยไม่แก้ system-wide configuration**
+- [x] **Step 1: ตรวจหรือเตรียม workspace-local .NET 10 SDK โดยไม่แก้ system-wide configuration**
 
 ```bash
 dotnet --info
 dotnet --list-sdks
 ```
 
-Expected: มี .NET 10 SDK; หากไม่มีให้ติดตั้งแบบ workspace-local ที่ `.dotnet/` และบันทึก version จริงก่อนทำต่อ
+Expected: มี .NET 10 SDK; หากไม่มีให้ติดตั้งแบบ workspace-local ที่ `.dotnet/` และบันทึก version จริงก่อนทำต่อ ผลของ Step 2 คือ SDK 10.0.400 และ ASP.NET Core Runtime 10.0.11 บน macOS arm64
 
-- [ ] **Step 2: เขียน SDK-style project file**
+- [x] **Step 2: เขียน SDK-style project file**
 
 `OTP.csproj` ต้องมีแกนดังนี้:
 
@@ -107,11 +107,19 @@ Expected: มี .NET 10 SDK; หากไม่มีให้ติดตั�
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>OTT</RootNamespace>
+    <AssemblyName>OTP</AssemblyName>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <RazorCompileOnPublish>false</RazorCompileOnPublish>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Controllers/**/*.cs" />
+  </ItemGroup>
 </Project>
 ```
 
-- [ ] **Step 3: เขียน HTTP pipeline ขั้นต่ำ**
+Temporary exclusions ต้องถูกนำออกใน Task 3–4 หลังย้าย controller และ Razor views เพื่อให้ build ของแต่ละ checkpoint ผ่านจริง
+
+- [x] **Step 3: เขียน HTTP pipeline ขั้นต่ำ**
 
 `Program.cs` ต้องลงทะเบียน `AddControllersWithViews()`, `UseStaticFiles()` และ route:
 
@@ -124,18 +132,18 @@ app.Run();
 public partial class Program { }
 ```
 
-- [ ] **Step 4: ลบเฉพาะ startup/config files ที่ถูกแทนที่แล้ว**
+- [x] **Step 4: ลบเฉพาะ startup/config files ที่ถูกแทนที่แล้ว**
 
 ตรวจ target list แบบ read-only ก่อนใช้ `git rm` และยืนยันว่าไม่มี connection string หรือ secret ที่ถูกใช้งาน
 
-- [ ] **Step 5: Restore และ build scaffold**
+- [x] **Step 5: Restore และ build scaffold**
 
 ```bash
 dotnet restore OTP.csproj
 dotnet build OTP.csproj --no-restore
 ```
 
-Expected: build อาจยัง fail เฉพาะ legacy controller/view compatibility ซึ่งต้องบันทึกรายการที่แน่นอนสำหรับ Task 3–4; project evaluation และ restore ต้องสำเร็จ
+Expected: restore และ build ต้อง exit 0; legacy controller/views ยังไม่ถูก compile ตาม temporary migration boundaries ที่บันทึกใน D-005
 
 - [ ] **Step 6: Commit Task 2**
 

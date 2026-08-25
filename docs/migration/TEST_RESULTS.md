@@ -9,7 +9,10 @@
 | Baseline checksum manifest | macOS 26.6.2 arm64 | PASS | `shasum -c` ยืนยัน 382/382 ไฟล์เป็น `OK` |
 | Local Git baseline | macOS 26.6.2 arm64 | PASS | Initial commit `d0afeec`; ignored build/dependency directories ไม่ถูก stage |
 | Legacy build | macOS 26.6.2 arm64 | NOT RUN | .NET Framework/MSBuild ไม่มีบน macOS baseline |
-| ASP.NET Core build | macOS 26.6.2 arm64 | NOT RUN | ยังไม่เริ่ม Step 2 และยังไม่มี .NET SDK |
+| Workspace-local .NET SDK | macOS 26.6.2 arm64 | PASS | SDK 10.0.400, ASP.NET Core Runtime 10.0.11, RID `osx-arm64` |
+| ASP.NET Core restore | macOS 26.6.2 arm64 | PASS | `dotnet restore OTP.csproj` exit 0 |
+| ASP.NET Core scaffold build | macOS 26.6.2 arm64 | PASS | Debug build, 0 warnings, 0 errors |
+| Scaffold runtime health | macOS 26.6.2 arm64 | PASS | `GET /migration-health` ตอบ HTTP 200 พร้อม status `ok` |
 | Windows build/test | Windows 11 x64 | NOT RUN | ต้องยืนยันใน Step 6 บน Windows หรือ CI Windows runner |
 
 กติกา: `NOT RUN` ไม่ถือว่า PASS และห้ามสรุปว่า cross-platform สมบูรณ์จนกว่า Mac และ Windows จะผ่าน build/test ตาม acceptance criteria

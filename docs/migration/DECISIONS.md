@@ -27,3 +27,10 @@
 - **สถานะ:** ผู้ใช้กำหนด
 - **กติกา:** หลังจบแต่ละ Step ผู้ดำเนินงานต้องรายงานไฟล์ที่เปลี่ยน, คำสั่งตรวจสอบ, ผลลัพธ์ และความเสี่ยงคงเหลือ จากนั้นหยุดและขออนุมัติก่อนเริ่ม Step ถัดไป
 
+## D-005: Step 2 ต้อง build ผ่านด้วย temporary migration boundaries
+
+- **วันที่:** 2026-08-25
+- **สถานะ:** ใช้ระหว่าง Step 2 และต้องยกเลิกตามลำดับใน Step 3–4
+- **เหตุผล:** scaffold checkpoint ที่ commit ทั้งที่ build fail จะทำให้แยก regression จาก legacy incompatibility ไม่ได้
+- **การตัดสินใจ:** ยกเว้น `Controllers/**/*.cs` จาก compilation และปิด Razor build/publish compilation ชั่วคราว โดยไม่ลบ controller หรือ views เดิม
+- **เงื่อนไขสิ้นสุด:** Step 3 ต้องนำ controller กลับเข้า compilation และ Step 4 ต้องเปิด Razor compilation ก่อนสรุป migration
