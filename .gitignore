@@ -1,0 +1,28 @@
+# IDE and user-specific files
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs and restored dependencies
+bin/
+obj/
+packages/
+artifacts/
+TestResults/
+coverage/
+
+# Workspace-local .NET SDK, if used
+.dotnet/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+

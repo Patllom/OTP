@@ -1,0 +1,434 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    @*<title>Marazzo premium HTML5 &amp; CSS3 template</title>*@
+    <title>การศึกษาเพื่อพัฒนาศูนย์ข้อมูลคมนาคมของประเทศไทย</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Default Description">
+    <meta name="keywords" content="fashion, store, E-commerce">
+    <meta name="robots" content="*">
+    <link rel="shortcut icon" href="~/asset/images/content/logo1.png">
+    <!-- CSS Style -->
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/font-awesome.css" media="all">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/revslider.css">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/owl.carousel.css">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/owl.theme.css">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/jquery.bxslider.css">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/jquery.mobile-menu.css">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/style.css" media="all">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/responsive.css" media="all">
+    <link rel="stylesheet" href="https://use.typekit.net/hxi4fbo.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,600,800,400' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i,900" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Sans+Thai:wght@100..900&family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+
+    <style>
+        .logo {
+            background: #1176bc;
+        }
+
+        #nav > li > a {
+            color: #1176bc;
+        }
+
+        .mm-toggle .icon-align-justify:before {
+            color: #1176bc;
+        }
+
+        .mobile-menu li a {
+            color: #1176bc;
+        }
+
+        .logo {
+            background: #ffffff;
+        }
+
+        .header-container .fl-nav-menu {
+            width: 70%;
+        }
+
+        h2 {
+            font-family: "Kanit", serif;
+            font-size: 46px;
+            color: rgb(4 45 161);
+        }
+
+        h4 {
+            font-family: "Kanit", serif;
+            font-size: 20px;
+            color: rgb(4 45 161);
+        }
+
+        body {
+            font-family: "Noto Sans Thai", Tahoma;
+        }
+    </style>
+    @RenderSection("Styles", false)
+
+</head>
+<body style=" padding: 10px;">
+    <div id="page">
+        <header>
+
+            <div id="header">
+                <div class="container">
+                    <div class="header-container row">
+                        <div class="logo">
+                            <a href="@Url.Content("~/")Home/index" title="index">
+                                <div><img src="~/asset/images/content/logo1.png" alt="logo" style="height:75px;"></div>
+                            </a>
+                        </div>
+                        <div class="fl-nav-menu">
+                            <nav>
+                                <div class="mm-toggle-wrap">
+                                    <div class="mm-toggle"><i class="icon-align-justify"></i><span class="mm-label">Menu</span> </div>
+                                </div>
+                                <div class="nav-inner">
+                                    <!-- BEGIN NAV -->
+                                    <ul id="nav" class="hidden-xs">
+                                        <li class="level0 parent drop-menu">
+                                            <a href="@Url.Content("~/")Home/index"><span>เกี่ยวกับโครงการ</span> </a>
+                                            <ul class="level1">
+                                                <li class=""> <a href="@Url.Content("~/")Home/about"><span>ที่มาและความสำคัญโครงการ</span></a> </li>
+
+                                                <li class=""> <a href="@Url.Content("~/")Home/scopeofwork"><span>ขั้นตอนการดำเนินงาน</span></a> </li>
+                                                <li class=""> <a href="@Url.Content("~/")Home/objective"><span>วัตถุประสงค์</span></a> </li>
+                                            </ul>
+                                        </li>
+                                        @*<li> <a class="level-top" href="@Url.Content("~/")Home/index"><span>หน้าแรก</span></a></li>*@
+                                        @*<li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/scopeofwork"><span>ขั้นตอนการดำเนินงาน</span></a> </li>*@
+                                        <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/knowledgetech"><span>การถ่ายทอดองค์ความรู้และเทคโนโลยี</span></a> </li>
+                                        <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/eventpic"><span>การฝึกอบรมสัมนา</span></a> </li>
+                                        <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/information"><span>ข่าวประชาสัมพันธ์</span></a> </li>
+                                        <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/projectresult"><span>ผลการดำเนินงาน</span></a> </li>
+                                        <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/contact"><span>ติตดต่อโครงการ</span></a> </li>
+                                    </ul>
+                                    <!--nav-->
+                                </div>
+                            </nav>
+                        </div>
+
+                        <div class="fl-header-right">
+                            @*<div class="fl-links">
+                                    <div class="no-js">
+                                        <a title="Company" class="clicker" onclick="openNav()"></a>
+                                    </div>
+                                </div>*@
+                            <div class="fl-cart-contain">
+                                <div class="mini-cart">
+
+                                    <div class="fl-mini-cart-content" style="display: none;">
+                                        <div class="block-subtitle">
+                                            <div class="top-subtotal">2 items, <span class="price">$259.99</span> </div>
+                                            <!--top-subtotal-->
+                                            <!--pull-right-->
+                                        </div>
+                                        <!--block-subtitle-->
+                                        <ul class="mini-products-list" id="cart-sidebar">
+                                            <li class="item first">
+                                                <div class="item-inner">
+                                                    <a class="product-image" title="timi &amp; leslie Sophia Diaper Bag, Lemon Yellow/Shadow White" href="#l"><img alt="timi &amp; leslie Sophia Diaper Bag, Lemon Yellow/Shadow White" src="~/asset/products-images/p4.jpg"></a>
+                                                    <div class="product-details">
+                                                        <div class="access"><a class="btn-remove1" title="Remove This Item" href="#">Remove</a> <a class="btn-edit" title="Edit item" href="#"><i class="icon-pencil"></i><span class="hidden">Edit item</span></a> </div>
+                                                        <!--access-->
+                                                        <strong>1</strong> x <span class="price">$179.99</span>
+                                                        <p class="product-name"><a href="product-detail.html">Fresh Organic Mustard Leaves</a></p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="item last">
+                                                <div class="item-inner">
+                                                    <a class="product-image" title="JP Lizzy Satchel Designer Diaper Bag - Slate Citron" href="#"><img alt="JP Lizzy Satchel Designer Diaper Bag - Slate Citron" src="~/asset/products-images/p3.jpg"></a>
+                                                    <div class="product-details">
+                                                        <div class="access"><a class="btn-remove1" title="Remove This Item" href="#">Remove</a> <a class="btn-edit" title="Edit item" href="#"><i class="icon-pencil"></i><span class="hidden">Edit item</span></a> </div>
+                                                        <!--access-->
+                                                        <strong>1</strong> x <span class="price">$80.00</span>
+                                                        <p class="product-name"><a href="product-detail.html">Fresh Organic Mustard Leaves</a></p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="actions">
+                                            <button class="btn-checkout" title="Checkout" type="button" onClick="window.location=checkout.html"><span>Checkout</span></button>
+                                        </div>
+                                        <!--actions-->
+                                    </div>
+                                    <!--fl-mini-cart-content-->
+                                </div>
+                            </div>
+                            <!--mini-cart-->
+                            <div class="collapse navbar-collapse">
+                                <form class="navbar-form" role="search">
+                                    <div class="input-group">
+                                       
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="search-btn"> <span class="glyphicon glyphicon-search"> <span class="sr-only">Search</span> </span> </button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                            <!--links-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+        <!--container-->
+
+        @RenderBody()
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <footer>
+
+
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    @*<div class="col-xs-12 col-sm-4">
+            <div class="social">
+                <ul>
+                    <li class="fb"><a href="#"></a></li>
+                    <li class="tw"><a href="#"></a></li>
+                    <li class="googleplus"><a href="#"></a></li>
+                    <li class="rss"><a href="#"></a></li>
+                    <li class="pintrest"><a href="#"></a></li>
+                    <li class="linkedin"><a href="#"></a></li>
+                    <li class="youtube"><a href="#"></a></li>
+                </ul>
+            </div>
+        </div>*@
+                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 coppyright" style="padding-top: 0px;">
+                        <h3>การศึกษาเพื่อพัฒนาศูนย์ข้อมูลคมนาคมของประเทศไทย</h3>
+                        © Copyright 2025
+                        <br /> (Transport Data Center) กรุงเทพมหานคร
+                        <br />โทรศัพท์ : 0-2215-1515  อีเมลล์ : otptdc@gmail.com
+
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 coppyright" style="padding-top: 0px;">
+                        <div class="social" style=" float: none;">
+                            <ul style="float: none;">
+                                <li class="fb"><a href="#"></a></li>
+                                <li class="tw"><a href="#"></a></li>
+                                <li class="googleplus"><a href="#"></a></li>
+                                <li class="rss"><a href="#"></a></li>
+                                <li class="pintrest"><a href="#"></a></li>
+                                <li class="linkedin"><a href="#"></a></li>
+                                <li class="youtube"><a href="#"></a></li>
+                            </ul>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 coppyright" style="padding-top: 10px;">
+                        ผู้เข้าชม : วันนี้ <strong id="lbvisitor1">4 </strong> 
+                        &nbsp;&nbsp; เดือนนี้  <strong id="lbvisitor2">4 </strong>  
+                        &nbsp;&nbsp; ปีนี้   <strong id="lbvisitor3"> 4 </strong>  
+                        &nbsp;&nbsp; ทั้งหมด <strong id="lbvisitor4">4 </strong>
+                    </div>
+                   
+
+                </div>
+
+          
+            </div>
+        </div>
+        <!--footer-bottom-->
+        <!-- BEGIN SIMPLE FOOTER -->
+    </footer>
+
+    <div id="mobile-menu">
+        <ul>
+            <li>
+                <div class="mm-search">
+                    <form id="search1" name="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control simple" placeholder="Search ..." name="srch-term" id="srch-term">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i> </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </li>
+
+            <li class="level0 parent drop-menu">
+                <a href="@Url.Content("~/")Home/index"><span>เกี่ยวกับโครงการ</span> </a>
+                <ul class="level1">
+                    <li class=""> <a href="@Url.Content("~/")Home/about"><span>ที่มาและความสำคัญโครงการ</span></a> </li>
+                    <li class=""> <a href="@Url.Content("~/")Home/scopeofwork"><span>ขั้นตอนการดำเนินงาน</span></a> </li>
+                    <li class=""> <a href="@Url.Content("~/")Home/objective"><span>วัตถุประสงค์</span></a> </li>
+                </ul>
+            </li>
+            @*<li> <a class="level-top" href="@Url.Content("~/")Home/index"><span>หน้าแรก</span></a></li>*@
+            @*<li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/scopeofwork"><span>ขั้นตอนการดำเนินงาน</span></a> </li>*@
+            <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/knowledgetech"><span>การถ่ายทอดองค์ความรู้และเทคโนโลยี</span></a> </li>
+            <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/eventpic"><span>การฝึกอบรมสัมนา</span></a> </li>
+            <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/information"><span>ข่าวประชาสัมพันธ์</span></a> </li>
+            <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/projectresult"><span>ผลการดำเนินงาน</span></a> </li>
+            <li class="mega-menu"> <a class="level-top" href="@Url.Content("~/")Home/contact"><span>ติตดต่อโครงการ</span></a> </li>
+
+
+        </ul>
+
+    </div>
+
+
+
+    <!-- JavaScript -->
+    <script src="~/asset/js/jquery.min.js"></script>
+    <script src="~/asset/js/bootstrap.min.js"></script>
+    <script src="~/asset/js/parallax.js"></script>
+    <script src="~/asset/js/revslider.js"></script>
+    <script src="~/asset/js/common.js"></script>
+    <script src="~/asset/js/jquery.bxslider.min.js"></script>
+    <script src="~/asset/js/owl.carousel.min.js"></script>
+    <script src="~/asset/js/jquery.mobile-menu.min.js"></script>
+    <script src="~/asset/js/countdown.js"></script>
+    @RenderSection("Scripts", false)
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('#thm-rev-slider').show().revolution({
+                dottedOverlay: 'none',
+                delay: 5000,
+                startwidth: 0,
+                startheight: 750,
+
+                hideThumbs: 200,
+                thumbWidth: 200,
+                thumbHeight: 50,
+                thumbAmount: 2,
+
+                navigationType: 'thumb',
+                navigationArrows: 'solo',
+                navigationStyle: 'round',
+
+                touchenabled: 'on',
+                onHoverStop: 'on',
+
+                swipe_velocity: 0.7,
+                swipe_min_touches: 1,
+                swipe_max_touches: 1,
+                drag_block_vertical: false,
+
+                spinner: 'spinner0',
+                keyboardNavigation: 'off',
+
+                navigationHAlign: 'center',
+                navigationVAlign: 'bottom',
+                navigationHOffset: 0,
+                navigationVOffset: 20,
+
+                soloArrowLeftHalign: 'left',
+                soloArrowLeftValign: 'center',
+                soloArrowLeftHOffset: 20,
+                soloArrowLeftVOffset: 0,
+
+                soloArrowRightHalign: 'right',
+                soloArrowRightValign: 'center',
+                soloArrowRightHOffset: 20,
+                soloArrowRightVOffset: 0,
+
+                shadow: 0,
+                fullWidth: 'on',
+                fullScreen: 'on',
+
+                stopLoop: 'off',
+                stopAfterLoops: -1,
+                stopAtSlide: -1,
+
+                shuffle: 'off',
+
+                autoHeight: 'on',
+                forceFullWidth: 'off',
+                fullScreenAlignForce: 'off',
+                minFullScreenHeight: 0,
+                hideNavDelayOnMobile: 1500,
+
+                hideThumbsOnMobile: 'off',
+                hideBulletsOnMobile: 'off',
+                hideArrowsOnMobile: 'off',
+                hideThumbsUnderResolution: 0,
+
+                hideSliderAtLimit: 0,
+                hideCaptionAtLimit: 0,
+                hideAllCaptionAtLilmit: 0,
+                startWithSlide: 0,
+                fullScreenOffsetContainer: ''
+            });
+        });
+    </script>
+    <script>
+        function HideMe() {
+            jQuery('.popup1').hide();
+            jQuery('#fade').hide();
+        }
+
+        jQuery(document).ready(function () {
+            /*   updatevisitor อยู่หหน้า INDEX */
+            jQuery.ajax({
+                type: "get",
+                url: "https://www.tpr-10.com/home/getvisitor/tdc-otp",
+                data: {},
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                    jQuery("#lbvisitor1").html(response[0].v_num.toLocaleString() + " ");
+                    jQuery("#lbvisitor2").html(response[1].v_num.toLocaleString() + " ");
+                    jQuery("#lbvisitor3").html(response[2].v_num.toLocaleString() + " ");
+                    jQuery("#lbvisitor4").html(response[3].v_num.toLocaleString() + " ");
+                },
+                error: function (xhr, status, error) {
+                    console.log("error");
+                    console.error("เกิดข้อผิดพลาด:", error);
+                }
+            });
+        });
+
+
+    </script>
+    <!-- Hot Deals Timer 1-->
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
+
+    <script>
+        var dthen1 = new Date("12/25/17 11:59:00 PM");
+        start = "08/04/15 03:02:11 AM";
+        start_date = Date.parse(start);
+        var dnow1 = new Date(start_date);
+        if (CountStepper > 0)
+            ddiff = new Date((dnow1) - (dthen1));
+        else
+            ddiff = new Date((dthen1) - (dnow1));
+        gsecs1 = Math.floor(ddiff.valueOf() / 1000);
+
+        var iid1 = "countbox_1";
+        CountBack_slider(gsecs1, "countbox_1", 1);
+    </script>
+</body>
+</html>

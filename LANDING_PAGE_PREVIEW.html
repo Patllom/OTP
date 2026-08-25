@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="th">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Preview — การศึกษาเพื่อพัฒนาศูนย์ข้อมูลคมนาคมของประเทศไทย</title>
+    <link rel="stylesheet" href="asset/stylesheet/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600&amp;family=Noto+Sans+Thai:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; color: #17315b; background: #fff; font-family: "Noto Sans Thai", sans-serif; }
+        .preview-note { padding: 9px 16px; border-bottom: 1px solid #ffecb5; color: #664d03; background: #fff3cd; text-align: center; font-size: 13px; }
+        .site-header { position: relative; z-index: 2; background: #fff; box-shadow: 0 2px 12px rgba(0, 0, 0, .08); }
+        .header-inner { display: flex; max-width: 1170px; margin: auto; padding: 12px 20px; align-items: center; gap: 28px; }
+        .logo-img { width: 145px; height: 62px; object-fit: contain; }
+        .nav { display: flex; margin-left: auto; align-items: center; gap: 23px; font-size: 14px; }
+        .nav a { color: #1176bc; text-decoration: none; font-weight: 500; }
+        .hero { position: relative; min-height: 560px; background: url("asset/images/content/cover1.png") center / cover no-repeat; }
+        .hero::after { position: absolute; inset: 0; content: ""; background: linear-gradient(90deg, rgba(2, 34, 88, .78), rgba(4, 74, 137, .12)); }
+        .hero-copy { position: relative; z-index: 1; max-width: 1170px; margin: auto; padding: 120px 20px; color: #fff; }
+        .hero h1 { max-width: 780px; margin: 0 0 20px; font: 600 52px/1.18 Kanit, sans-serif; }
+        .hero p { max-width: 690px; font-size: 20px; line-height: 1.7; }
+        .btn-main { display: inline-block; margin-top: 12px; padding: 14px 25px; border: 0; border-radius: 6px; color: #092b58; background: #f5b41b; text-decoration: none; font-weight: 600; }
+        .section { padding: 60px 20px; }
+        .section.alt { background: #d3dbcb; }
+        .wrap { max-width: 1170px; margin: auto; }
+        .section h2 { margin: 0 0 35px; color: #042da1; text-align: center; font: 600 40px Kanit, sans-serif; }
+        .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+        .card { padding: 22px 18px; border-radius: 10px; background: #fff; text-align: center; box-shadow: 0 6px 20px rgba(18, 48, 88, .08); }
+        .card img { width: 220px; height: 220px; border-radius: 50%; object-fit: cover; }
+        .card h3 { color: #042da1; font: 500 19px/1.55 Kanit, sans-serif; }
+        .process { display: block; width: 100%; height: auto; background: #f4f4f5; }
+        .story { color: darkblue; text-indent: 2.5em; font-size: 19px; line-height: 1.8; }
+        .contact { background: #f5f7fa; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .field { margin-bottom: 15px; }
+        .field label { display: block; margin-bottom: 6px; }
+        .field input, .field textarea { width: 100%; max-width: none; padding: 11px; border: 1px solid #ccd4df; border-radius: 5px; }
+        .map { width: 100%; height: 390px; border: 0; }
+        .footer { padding: 28px 20px; color: #fff; background: #0b2c56; text-align: center; line-height: 1.7; }
+        @media (max-width: 900px) {
+            .nav { display: none; }
+            .hero { min-height: 430px; }
+            .hero-copy { padding: 80px 20px; }
+            .hero h1 { font-size: 38px; }
+            .cards, .contact-grid { grid-template-columns: 1fr; }
+            .section h2 { font-size: 34px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-note">Static preview จากโค้ดปัจจุบัน — ฟอร์มและลิงก์ยังไม่ส่งข้อมูลจริง</div>
+    <header class="site-header">
+        <div class="header-inner">
+            <img class="logo-img" src="asset/images/content/logo1.png" alt="โลโก้โครงการ">
+            <nav class="nav" aria-label="เมนูหลัก">
+                <a href="#objectives">เกี่ยวกับโครงการ</a>
+                <a href="#process">การถ่ายทอดองค์ความรู้และเทคโนโลยี</a>
+                <a href="#contact">การฝึกอบรมสัมมนา</a>
+                <a href="#contact">ข่าวประชาสัมพันธ์</a>
+                <a href="#process">ผลการดำเนินงาน</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="hero">
+            <div class="hero-copy">
+                <h1>การศึกษาเพื่อพัฒนาศูนย์ข้อมูลคมนาคมของประเทศไทย</h1>
+                <p>พัฒนากรอบระบบเทคโนโลยีและศูนย์ข้อมูลคมนาคม เพื่อเชื่อมโยงและเผยแพร่ข้อมูลแก่ภาครัฐ ภาคเอกชน และประชาชน</p>
+                <a class="btn-main" href="#objectives">ดูวัตถุประสงค์โครงการ</a>
+            </div>
+        </section>
+        <section class="section alt" id="objectives">
+            <div class="wrap">
+                <h2>วัตถุประสงค์โครงการ</h2>
+                <div class="cards">
+                    <article class="card">
+                        <img src="https://www.landbridgethai.com/wp-content/themes/landbridgethai/images/section1.png" alt="">
+                        <h3>1) ศึกษา ทบทวน รวบรวม และวิเคราะห์ความต้องการใช้ข้อมูล รูปแบบข้อมูล และระบบสารสนเทศ</h3>
+                    </article>
+                    <article class="card">
+                        <img src="https://library.wu.ac.th/km/wp-content/uploads/sites/9/2022/10/Digital.jpg" alt="">
+                        <h3>2) จัดทำกรอบการพัฒนาระบบเทคโนโลยีขององค์กรและกรอบการพัฒนาศูนย์ข้อมูลคมนาคม</h3>
+                    </article>
+                    <article class="card">
+                        <img src="https://www.abss.co.th/wp-content/uploads/2020/08/ab_server-racks-datacenter-scaled.jpg" alt="">
+                        <h3>3) จัดทำศูนย์ข้อมูลคมนาคมเพื่อเผยแพร่ข้อมูลแก่ภาครัฐ ภาคเอกชน และประชาชน</h3>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="process">
+            <div class="wrap"><img class="process" src="asset/images/content/content1.png" alt="ขั้นตอนการดำเนินงาน"></div>
+        </section>
+        <section class="section">
+            <div class="wrap">
+                <h2>ความเป็นมาของโครงการ</h2>
+                <p class="story">ยุทธศาสตร์ชาติ พ.ศ. 2561–2580 ด้านการสร้างความสามารถในการแข่งขัน กำหนดเป้าหมายยกระดับศักยภาพของประเทศ สนับสนุนการผลิตและบริการ พัฒนาระบบขนส่งให้เชื่อมโยงเป็นโครงข่ายที่สมบูรณ์ และสร้างโอกาสให้ผู้ประกอบการเข้าถึงข้อมูลที่ทันสมัย</p>
+                <p class="story">การพัฒนาฐานข้อมูลและระบบเชื่อมโยงข้อมูลภาครัฐให้มีมาตรฐานเดียวกัน ช่วยให้ทุกภาคส่วนเข้าถึงและใช้ประโยชน์ร่วมกัน ลดต้นทุน และต่อยอดการวางแผนในอนาคต</p>
+            </div>
+        </section>
+        <section class="section contact" id="contact">
+            <div class="wrap">
+                <h2>ติดต่อโครงการ</h2>
+                <div class="contact-grid">
+                    <form>
+                        <div class="field"><label for="preview-name">ชื่อ *</label><input id="preview-name" placeholder="ชื่อ"></div>
+                        <div class="field"><label for="preview-email">อีเมล *</label><input id="preview-email" type="email" placeholder="อีเมล"></div>
+                        <div class="field"><label for="preview-phone">เบอร์โทรศัพท์</label><input id="preview-phone" type="tel"></div>
+                        <div class="field"><label for="preview-message">ข้อความ *</label><textarea id="preview-message" rows="5"></textarea></div>
+                        <button type="button" class="btn-main">ส่งข้อความ</button>
+                    </form>
+                    <iframe class="map" title="แผนที่โครงการ" loading="lazy" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.3531837989876!2d100.52028261408273!3d13.757562390343764!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1"></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <strong>การศึกษาเพื่อพัฒนาศูนย์ข้อมูลคมนาคมของประเทศไทย</strong><br>
+        Transport Data Center — กรุงเทพมหานคร<br>
+        โทรศัพท์ 0-2215-1515 · otptdc@gmail.com
+    </footer>
+</body>
+</html>

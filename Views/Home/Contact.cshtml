@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+@section Scripts {
+
+}
+
+@section Styles {
+
+
+}
+
+
+<div class="container" style="margin-top:50px;">
+    <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12" style="background-color: #F4F4F5FF;">
+        <div class="new_title" style="">
+            <h2>ติดต่อโครงการ</h2>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="main-container col2-right-layout">
+    <div class="main container">
+        <div class="row">
+            <div class="col-main col-sm-6 wow bounceInUp animated animated animated" style="visibility: visible;">
+                <div id="messages_product_view"></div>
+                    <div class="static-contain">
+                        <fieldset class="group-select">
+                            <ul>
+                                <li id="billing-new-address-form">
+                                    <fieldset class="">
+                                        <ul>
+                                            <li>
+                                                <div class="customer-name">
+                                                    <div class="input-box name-firstname">
+                                                        <label for="name"><em class="required">*</em>ชื่อ</label>
+                                                        <br>
+                                                        <input name="name" id="name" title="Name" value="ชื่อ" class="input-text required-entry" type="text">
+                                                    </div>
+                                                    <div class="input-box name-firstname">
+                                                        <label for="email"><em class="required">*</em>อีเมล์</label>
+                                                        <br>
+                                                        <input name="email" id="email" title="Email" value="อีเมล์" class="input-text required-entry validate-email" type="text">
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <label for="telephone">เบอร์โทรศัพท์</label>
+                                                <br>
+                                                <input name="telephone" id="telephone" title="เบอร์โทรศัพท์" value="" class="input-text" type="text">
+                                            </li>
+                                            <li>
+                                                <label for="comment"><em class="required">*</em>ข้อความ</label>
+                                                <br>
+                                                <textarea name="comment" id="comment" title="Comment" class="required-entry input-text" cols="5" rows="3"></textarea>
+                                            </li>
+                                        </ul>
+                                    </fieldset>
+                                </li>
+                                <p class="require"><em class="required">* </em>จำเป็นต้องใส่</p>
+                                <input type="text" name="hideit" id="hideit" value="" style="display:none !important;">
+                                <div class="buttons-set">
+                                    <button type="submit" title="Submit" class="button submit"><span><span>ส่งข้อความ</span></span></button>
+                                </div>
+                            </ul>
+                        </fieldset>
+                    </div>
+
+            </div>
+            <aside class="col-right sidebar col-sm-6 wow bounceInUp animated animated animated" style="visibility: visible;">
+                <div class="block block-company">
+                    <div class="block-content">
+                        <center>
+                            <iframe style="border: 0;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.3531837989876!2d100.52028261408273!3d13.757562390343764!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29936222fb455%3A0x1a0d35f71b7ac2f5!2z4Liq4Liz4LiZ4Lix4LiB4LiZ4LmC4Lii4Lia4Liy4Lii4LmB4Lil4Liw4LmB4Lic4LiZ4LiB4Liy4Lij4LiC4LiZ4Liq4LmI4LiH4LmB4Lil4Liw4LiI4Lij4Liy4LiI4Lij!5e0!3m2!1sth!2sth!4v1472182270233" width="600" height="450" frameborder="0" allowfullscreen="allowfullscreen">
+                            </iframe>
+                        </center>
+                    </div>
+                </div>
+            </aside>
+            <!--col-right sidebar-->
+        </div>
+        <!--row-->
+    </div>
+    <!--main-container-inner-->
+</div>
+
