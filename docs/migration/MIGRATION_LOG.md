@@ -118,5 +118,6 @@
 - **Fresh final Step 5 verification:** รัน `bash -n` ทั้งสอง shell scripts และ `scripts/verify.sh` หลังเพิ่ม regression ล่าสุด; restore สำเร็จ, build 0 warnings/0 errors และ full suite ผ่าน 26/26, 0 failed, 0 skipped
 - **Mac run script:** `scripts/run.sh --urls http://127.0.0.1:5190` เริ่ม Kestrel Production สำเร็จ; `GET /` ตอบ HTTP 200 `text/html`, 34,837 bytes และมี marker `วัตถุประสงค์โครงการ`; หยุดด้วย Ctrl+C อย่างสะอาด
 - **PowerShell status:** เครื่อง macOS นี้ไม่มี `pwsh` หรือ `powershell`; PowerShell scripts ถูกเตรียมและมี platform-selected behavior tests แต่ syntax/runtime จริงต้องรันบน Windows ใน Step 6 จึงยังเป็น `NOT RUN`
+- **Step commit:** `b35dcc0` (`docs: add cross-platform setup and verification`); เพิ่ม/แก้ 10 files รวม 498 insertions โดย shell scripts ถูกบันทึกด้วย executable mode `100755`
 - **Files changed:** `scripts/run.sh`, `scripts/run.ps1`, `scripts/verify.sh`, `scripts/verify.ps1`, `README.md`, `tests/OTP.Web.Tests/DeveloperExperienceScriptTests.cs` และเอกสาร migration/plan
 - **Rollback:** revert commit ของ Step 5; runtime migration และ tests จาก Step 4 ยังคงอยู่

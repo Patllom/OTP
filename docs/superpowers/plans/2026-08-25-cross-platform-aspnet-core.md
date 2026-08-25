@@ -332,7 +332,7 @@ bash scripts/run.sh
 
 Expected: verification ผ่านและ `/` ตอบ 200 จาก local Kestrel
 
-- [ ] **Step 6: Commit Task 5**
+- [x] **Step 6: Commit Task 5**
 
 ```bash
 git add scripts README.md docs/migration
