@@ -45,5 +45,9 @@
 | Post-review solution-level verification | macOS 26.6.2 arm64 | PASS | `dotnet test OTT.sln --configuration Debug --no-restore` ค้นพบ test assembly และผ่าน 27/27 |
 | Post-review Step 1 full macOS verification | macOS 26.6.2 arm64 | PASS | SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors และ `scripts/verify.sh` ผ่าน 27/27 |
 | Post-review Step 1 Windows verification | Windows Server 2025 Datacenter x64 | PASS | GitHub Actions run `32878509685`; PowerShell restore/build/test wrapper และ compatibility route smoke tests ผ่านทุกขั้น |
+| Post-review outside-root script RED | macOS 26.6.2 arm64 | EXPECTED FAIL | behavior theory fail 2/2 เพราะ run/verify wrappers เรียก fake `dotnet` ใน temporary caller directory |
+| Post-review outside-root script GREEN | macOS 26.6.2 arm64 | PASS | targeted theory ผ่าน 2/2 หลัง Bash/PowerShell wrappers เปลี่ยนไป project root ก่อนทุก `dotnet` invocation |
+| Post-review Step 2 outside-root macOS verification | macOS 26.6.2 arm64 | PASS | เรียก absolute verify script จาก `/tmp`; SDK 10.0.400, restore ผ่าน, build 0 warnings/0 errors และ tests 29/29 ผ่าน |
+| Post-review Step 2 outside-root macOS runtime | macOS 26.6.2 arm64 | PASS | เรียก absolute run script จาก `/tmp`; หน้าแรกและ logo ตอบ HTTP 200, content root ถูกต้อง และ port 5192 ปิดสะอาด |
 
 กติกา: `EXPECTED FAIL`/`DIAGNOSTIC FAIL` ด้านบนเป็นหลักฐาน test-first และ defect history ไม่ใช่สถานะปัจจุบัน ส่วน `NOT RUN` ไม่ถือว่า PASS ปัจจุบัน acceptance สำหรับ macOS arm64 และ Windows x64 ผ่าน build/test/run แล้ว; รายการ Windows 11 ที่เหลือเป็น edition-specific manual smoke ไม่ใช่ runtime blocker ของ acceptance ที่ผู้ใช้อนุมัติ

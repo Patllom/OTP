@@ -83,6 +83,8 @@ $env:ASPNETCORE_URLS = 'http://127.0.0.1:5180'
 .\scripts\run.ps1
 ```
 
+Run/verify scripts จะเปลี่ยน working directory ไปที่ project root ก่อนตรวจ SDK และเรียก `dotnet` เสมอ จึงสามารถเรียก script ด้วย absolute path จาก directory อื่นได้โดยยังใช้ SDK policy จาก `global.json` ของ repository นี้
+
 ## ตรวจสอบด้วยคำสั่งมาตรฐาน
 
 `verify` scripts จะตรวจ SDK แล้วทำ restore, build และ test ตามลำดับ หากต้องการรันเอง:

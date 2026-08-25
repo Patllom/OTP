@@ -83,6 +83,36 @@ public sealed class DeveloperExperienceScriptTests
 
     [Theory]
     [MemberData(nameof(PlatformScripts))]
+    public async Task ScriptUsesProjectRootAsWorkingDirectoryWhenInvokedElsewhere(string scriptName)
+    {
+        using var fakeDotnet = new FakeDotnet("10.0.400");
+        var outsideDirectory = Directory.CreateTempSubdirectory("otp-script-caller-");
+
+        try
+        {
+            var result = await RunPlatformScriptFromWorkingDirectoryAsync(
+                scriptName,
+                fakeDotnet,
+                outsideDirectory.FullName,
+                []);
+
+            Assert.True(result.ExitCode == 0, result.CombinedOutput);
+            var workingDirectories = File.ReadAllLines(fakeDotnet.WorkingDirectoryLogFile);
+            Assert.NotEmpty(workingDirectories);
+            Assert.All(
+                workingDirectories,
+                workingDirectory => Assert.Equal(
+                    Path.GetFullPath(ProjectRoot),
+                    Path.GetFullPath(workingDirectory)));
+        }
+        finally
+        {
+            outsideDirectory.Delete(recursive: true);
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(PlatformScripts))]
     public async Task ScriptRejectsSdkBeforeVersion10(string scriptName)
     {
         using var fakeDotnet = new FakeDotnet("9.0.100");
@@ -99,12 +129,25 @@ public sealed class DeveloperExperienceScriptTests
         FakeDotnet fakeDotnet,
         params string[] scriptArguments)
     {
+        return await RunPlatformScriptFromWorkingDirectoryAsync(
+            scriptName,
+            fakeDotnet,
+            ProjectRoot,
+            scriptArguments);
+    }
+
+    private static async Task<ScriptResult> RunPlatformScriptFromWorkingDirectoryAsync(
+        string scriptName,
+        FakeDotnet fakeDotnet,
+        string workingDirectory,
+        IReadOnlyList<string> scriptArguments)
+    {
         var startInfo = new ProcessStartInfo
         {
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,
-            WorkingDirectory = ProjectRoot
+            WorkingDirectory = workingDirectory
         };
 
         if (OperatingSystem.IsWindows())
@@ -129,6 +172,7 @@ public sealed class DeveloperExperienceScriptTests
 
         startInfo.Environment["OTP_DOTNET"] = fakeDotnet.CommandFile;
         startInfo.Environment["OTP_TEST_DOTNET_LOG"] = fakeDotnet.LogFile;
+        startInfo.Environment["OTP_TEST_DOTNET_WORKING_DIRECTORY_LOG"] = fakeDotnet.WorkingDirectoryLogFile;
         startInfo.Environment["OTP_TEST_DOTNET_VERSION"] = fakeDotnet.Version;
         startInfo.Environment["OTP_CONFIGURATION"] = "Debug";
 
@@ -173,6 +217,7 @@ public sealed class DeveloperExperienceScriptTests
             Directory.CreateDirectory(_temporaryDirectory);
 
             LogFile = Path.Combine(_temporaryDirectory, "dotnet-calls.log");
+            WorkingDirectoryLogFile = Path.Combine(_temporaryDirectory, "dotnet-working-directories.log");
             CommandFile = Path.Combine(
                 _temporaryDirectory,
                 OperatingSystem.IsWindows() ? "dotnet.cmd" : "dotnet");
@@ -182,6 +227,7 @@ public sealed class DeveloperExperienceScriptTests
                 File.WriteAllText(
                     CommandFile,
                     "@echo off\r\n" +
+                    ">>\"%OTP_TEST_DOTNET_WORKING_DIRECTORY_LOG%\" echo %CD%\r\n" +
                     ">>\"%OTP_TEST_DOTNET_LOG%\" echo %*\r\n" +
                     "if \"%~1\"==\"--version\" echo %OTP_TEST_DOTNET_VERSION%\r\n" +
                     "exit /b 0\r\n");
@@ -191,6 +237,7 @@ public sealed class DeveloperExperienceScriptTests
                 File.WriteAllText(
                     CommandFile,
                     "#!/usr/bin/env bash\n" +
+                    "pwd -P >> \"$OTP_TEST_DOTNET_WORKING_DIRECTORY_LOG\"\n" +
                     "printf '%s\\n' \"$*\" >> \"$OTP_TEST_DOTNET_LOG\"\n" +
                     "if [ \"${1:-}\" = \"--version\" ]; then\n" +
                     "  printf '%s\\n' \"${OTP_TEST_DOTNET_VERSION:-10.0.400}\"\n" +
@@ -206,6 +253,8 @@ public sealed class DeveloperExperienceScriptTests
         public string CommandFile { get; }
 
         public string LogFile { get; }
+
+        public string WorkingDirectoryLogFile { get; }
 
         public string Version { get; }
 

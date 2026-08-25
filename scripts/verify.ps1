@@ -5,6 +5,8 @@ $otpTestProject = Join-Path $otpProjectRoot 'tests/OTP.Web.Tests/OTP.Web.Tests.c
 $otpDotnet = if ($env:OTP_DOTNET) { $env:OTP_DOTNET } else { 'dotnet' }
 $otpConfiguration = if ($env:OTP_CONFIGURATION) { $env:OTP_CONFIGURATION } else { 'Debug' }
 
+Set-Location -LiteralPath $otpProjectRoot
+
 try {
     Get-Command $otpDotnet -ErrorAction Stop | Out-Null
     $otpSdkVersion = (& $otpDotnet --version).Trim()

@@ -6,6 +6,8 @@ otp_project_root="$(cd -- "$otp_script_directory/.." && pwd)"
 otp_project="$otp_project_root/OTP.csproj"
 otp_dotnet="${OTP_DOTNET:-dotnet}"
 
+cd -- "$otp_project_root"
+
 if ! command -v "$otp_dotnet" >/dev/null 2>&1; then
   echo "OTP requires .NET 10 SDK, but '$otp_dotnet' was not found." >&2
   exit 1

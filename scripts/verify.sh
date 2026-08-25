@@ -7,6 +7,8 @@ otp_test_project="$otp_project_root/tests/OTP.Web.Tests/OTP.Web.Tests.csproj"
 otp_dotnet="${OTP_DOTNET:-dotnet}"
 otp_configuration="${OTP_CONFIGURATION:-Debug}"
 
+cd -- "$otp_project_root"
+
 if ! command -v "$otp_dotnet" >/dev/null 2>&1; then
   echo "OTP requires .NET 10 SDK, but '$otp_dotnet' was not found." >&2
   exit 1

@@ -173,3 +173,17 @@
 - **Windows verification:** GitHub Actions run `32878509685` สำหรับ implementation commit `135ca4b` จบ `success`; PowerShell restore/build/test wrapper และ compatibility route smoke tests ผ่านทุกขั้น
 - **Scope boundary:** ยังไม่แก้ working-directory/global.json behavior ของ scripts, Development/Production environment, HTTPS/proxy configuration, production UI หรือ `main`
 - **Rollback:** revert การแก้ `OTT.sln`, regression test และบันทึก Step 1 นี้; migration implementation ก่อน review จะยังอยู่ครบ
+
+## 2026-08-26 — Post-PR Review Step 2: Script Working Directory และ global.json
+
+- **Approval:** ผู้ใช้อนุมัติ Step 2 หลังได้รับขอบเขต RED/GREEN, macOS/Windows verification, documentation และ approval gate ก่อน Step 3
+- **Review finding:** run/verify wrappers resolve absolute project paths แต่ไม่เปลี่ยน working directory ก่อนเรียก `dotnet`; การเลือก SDK จึงอาจไม่พบ repository `global.json` เมื่อเรียก script จาก directory อื่น
+- **Test-first RED:** เพิ่ม behavior theory ที่รัน `run` และ `verify` scripts จริงจาก temporary caller directory พร้อม fake `dotnet` ที่บันทึก current directory; fail 2/2 เพราะทุก invocation ยังคงทำงานใน caller directory
+- **Implementation:** เพิ่ม `cd -- "$otp_project_root"` ใน Bash wrappers และ `Set-Location -LiteralPath $otpProjectRoot` ใน PowerShell wrappers ก่อนตรวจ SDK และเรียก `dotnet`; project paths และ argument forwarding เดิมไม่เปลี่ยน
+- **Targeted GREEN:** working-directory regression ผ่าน 2/2; `run` บันทึก project root 2 calls และ `verify` บันทึก project root 4 calls
+- **Bash syntax:** `bash -n` ผ่านทั้ง `scripts/run.sh` และ `scripts/verify.sh`
+- **Outside-root macOS verification:** เรียก absolute `scripts/verify.sh` จาก `/tmp` ด้วย workspace-local .NET SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors และ full suite ผ่าน 29/29
+- **Outside-root macOS runtime:** เรียก absolute `scripts/run.sh` จาก `/tmp` ที่ port 5192; content root เป็น migration worktree, หน้าแรกตอบ HTTP 200 พร้อม marker, logo ตอบ HTTP 200 `image/png` และ process/port ปิดสะอาด
+- **Documentation:** README ระบุว่า wrappers เปลี่ยนไป project root เพื่อให้เรียกจาก directory อื่นได้โดยยังใช้ SDK policy จาก repository `global.json`
+- **Scope boundary:** ยังไม่เปลี่ยน Development/Production defaults, HTTPS/proxy contract, controller, routes, views, static assets หรือ `main`
+- **Rollback:** revert การแก้ scripts, regression tests, README และบันทึก Step 2 นี้; Step 1 solution discovery จะยังอยู่ครบ

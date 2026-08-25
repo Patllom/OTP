@@ -9,6 +9,8 @@ $otpProjectRoot = Split-Path -Parent $PSScriptRoot
 $otpProject = Join-Path $otpProjectRoot 'OTP.csproj'
 $otpDotnet = if ($env:OTP_DOTNET) { $env:OTP_DOTNET } else { 'dotnet' }
 
+Set-Location -LiteralPath $otpProjectRoot
+
 try {
     Get-Command $otpDotnet -ErrorAction Stop | Out-Null
     $otpSdkVersion = (& $otpDotnet --version).Trim()
