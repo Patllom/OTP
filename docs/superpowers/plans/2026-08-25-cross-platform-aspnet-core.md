@@ -145,7 +145,7 @@ dotnet build OTP.csproj --no-restore
 
 Expected: restore และ build ต้อง exit 0; legacy controller/views ยังไม่ถูก compile ตาม temporary migration boundaries ที่บันทึกใน D-005
 
-- [ ] **Step 6: Commit Task 2**
+- [x] **Step 6: Commit Task 2**
 
 ```bash
 git add OTP.csproj Program.cs global.json appsettings.json docs/migration

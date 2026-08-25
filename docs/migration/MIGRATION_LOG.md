@@ -65,5 +65,6 @@
 - **Restore:** `/Users/theerapat_k/Codex/OTP/.dotnet/dotnet restore OTP.csproj` สำเร็จ
 - **Build:** Debug build สำเร็จด้วย 0 warnings และ 0 errors
 - **Runtime smoke test:** Kestrel ฟังที่ `http://127.0.0.1:5180`; `GET /migration-health` ตอบ HTTP 200 และ `{"status":"ok","framework":".NET 10"}`; process หยุดอย่างสะอาด
+- **Step commit:** `b914d31` (`build: scaffold ASP.NET Core application`)
 - **Production routes:** ยังไม่เปิดใช้งานใน Step 2 เพราะ controller/views จะย้ายใน Step 3–4
 - **Rollback:** revert commit ของ Step 2 บน branch migration หรือลบ worktree/branch โดย baseline บน `main` ไม่ได้รับผลกระทบ
