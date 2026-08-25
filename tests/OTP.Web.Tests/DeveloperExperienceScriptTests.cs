@@ -138,6 +138,72 @@ public sealed class DeveloperExperienceScriptTests
 
     [Theory]
     [MemberData(nameof(PlatformScripts))]
+    public async Task PowerShellScriptRestoresCallerSessionState(string scriptName)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        using var fakeDotnet = new FakeDotnet("10.0.400");
+        var callerDirectory = Directory.CreateTempSubdirectory("otp-powershell-caller-");
+        var locationLogFile = Path.Combine(callerDirectory.FullName, "location-after-script.log");
+        var environmentLogFile = Path.Combine(callerDirectory.FullName, "environment-after-script.log");
+
+        try
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                WorkingDirectory = callerDirectory.FullName
+            };
+            startInfo.ArgumentList.Add("-NoProfile");
+            startInfo.ArgumentList.Add("-ExecutionPolicy");
+            startInfo.ArgumentList.Add("Bypass");
+            startInfo.ArgumentList.Add("-Command");
+            startInfo.ArgumentList.Add(
+                "$ErrorActionPreference = 'Stop'; " +
+                "& $env:OTP_TEST_SCRIPT_PATH; " +
+                "[IO.File]::WriteAllText($env:OTP_TEST_SESSION_LOCATION_LOG, (Get-Location).Path); " +
+                "$environment = if (Test-Path Env:ASPNETCORE_ENVIRONMENT) { $env:ASPNETCORE_ENVIRONMENT } else { '<unset>' }; " +
+                "[IO.File]::WriteAllText($env:OTP_TEST_SESSION_ENVIRONMENT_LOG, $environment)");
+
+            startInfo.Environment["OTP_DOTNET"] = fakeDotnet.CommandFile;
+            startInfo.Environment["OTP_TEST_DOTNET_LOG"] = fakeDotnet.LogFile;
+            startInfo.Environment["OTP_TEST_DOTNET_WORKING_DIRECTORY_LOG"] = fakeDotnet.WorkingDirectoryLogFile;
+            startInfo.Environment["OTP_TEST_ASPNETCORE_ENVIRONMENT_LOG"] = fakeDotnet.EnvironmentLogFile;
+            startInfo.Environment["OTP_TEST_DOTNET_VERSION"] = fakeDotnet.Version;
+            startInfo.Environment["OTP_CONFIGURATION"] = "Debug";
+            startInfo.Environment["OTP_TEST_SCRIPT_PATH"] = Path.Combine(ProjectRoot, "scripts", $"{scriptName}.ps1");
+            startInfo.Environment["OTP_TEST_SESSION_LOCATION_LOG"] = locationLogFile;
+            startInfo.Environment["OTP_TEST_SESSION_ENVIRONMENT_LOG"] = environmentLogFile;
+            startInfo.Environment.Remove("ASPNETCORE_ENVIRONMENT");
+
+            using var process = new Process { StartInfo = startInfo };
+            process.Start();
+            var standardOutput = process.StandardOutput.ReadToEndAsync();
+            var standardError = process.StandardError.ReadToEndAsync();
+
+            await process.WaitForExitAsync();
+            var combinedOutput = $"{await standardOutput}{await standardError}";
+
+            Assert.True(process.ExitCode == 0, combinedOutput);
+            Assert.Equal(
+                Path.GetFullPath(callerDirectory.FullName),
+                Path.GetFullPath(File.ReadAllText(locationLogFile)));
+            Assert.Equal("<unset>", File.ReadAllText(environmentLogFile));
+        }
+        finally
+        {
+            callerDirectory.Delete(recursive: true);
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(PlatformScripts))]
     public async Task ScriptRejectsSdkBeforeVersion10(string scriptName)
     {
         using var fakeDotnet = new FakeDotnet("9.0.100");
