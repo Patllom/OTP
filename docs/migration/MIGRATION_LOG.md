@@ -148,3 +148,15 @@
 - **Final macOS re-verification:** หลังบันทึกผล Windows รัน `scripts/verify.sh` ซ้ำด้วย SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors และ tests 26/26 ผ่าน
 - **Documentation completeness:** `git diff --check` ผ่าน; matches ของ `NOT RUN`/`FAIL` ที่คงอยู่ใน test log ถูกระบุเป็น baseline/test-first history หรือ Windows 11 client-edition optional smoke ไม่ใช่ current acceptance failure
 - **Conclusion:** acceptance สำหรับ macOS arm64 และ Windows x64 ผ่านครบทั้ง restore/build/test/run; final branch state ต้องสะอาดและตรงกับ remote หลัง commit ส่งมอบ โดยยังคงห้าม merge/release จนกว่าผู้ใช้จะสั่งแยกต่างหาก
+
+## 2026-08-25 — Post-migration: Website Design Guide
+
+- **Approval 1:** ผู้ใช้ขอให้เก็บ CSS และ design เป็น `design.md` เพื่อใช้เป็นรูปแบบพัฒนาเว็บไซต์ จากนั้นอนุมัติ short design ที่ยึด landing-page preview เป็น baseline และกำหนดว่ายังไม่ commit/push
+- **Approval 2:** หลังตรวจไฟล์ ผู้ใช้อนุมัติให้ commit และ push ไปที่ branch migration
+- **Scope:** เพิ่ม design documentation และบันทึกรายการนี้เท่านั้น; ไม่แก้ Razor, production CSS, routes, controller หรือ assets และไม่ merge/release
+- **Sources:** สกัดจาก `LANDING_PAGE_PREVIEW.html`, ตรวจเทียบ `Views/Home/Index.cshtml`, `Views/Shared/_LayoutMain.cshtml` และข้อควรระวังใน `LANDING_PAGE_REVIEW.md`
+- **Output:** `design.md` ครอบคลุม design direction, color/type/layout tokens, component patterns, canonical CSS, asset baseline, responsive/accessibility rules, Do/Don't, implementation checklist และ change policy
+- **Legacy boundary:** ไม่คัดลอก theme CSS กว่า 13,000 บรรทัดเป็นมาตรฐานใหม่; ระบุ `style.css`/`responsive.css` เป็น compatibility layer และให้ canonical CSS เป็นฐานสำหรับ stylesheet ใหม่ในอนาคต
+- **Documentation verification:** ไม่พบ placeholder หรือ trailing whitespace, Markdown code fence ครบคู่, CSS block มีจำนวนวงเล็บปีกกาเปิด/ปิดเท่ากัน 51/51 และ local assets ที่อ้างอิงมีอยู่ครบ
+- **External-write boundary:** push เฉพาะ `migration/aspnet-core-net10`; ไม่มีการเปลี่ยน `main`, merge, tag, deploy หรือ release
+- **Rollback:** revert commit ของ design guide หรือลบ `design.md` และรายการ log นี้ โดยไม่กระทบ runtime migration
