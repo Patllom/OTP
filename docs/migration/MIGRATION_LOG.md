@@ -35,3 +35,14 @@
   - `docs/superpowers/specs/2026-08-25-cross-platform-aspnet-core-design.md`
   - `docs/superpowers/plans/2026-08-25-cross-platform-aspnet-core.md`
 - **Rollback:** ย้อนกลับ Git commits ของ Step 1 หรือลบเฉพาะไฟล์ที่ระบุด้านบนหากยังไม่มี commit
+
+## 2026-08-25 — Git Remote Setup
+
+- **Approval:** ผู้ใช้ขอให้ผูก Git กับ `https://github.com/Patllom/OTP.git`
+- **Scope:** ตั้งค่า Local Git remote และตรวจการเข้าถึงเท่านั้น; ไม่มีการ push
+- **Pre-check:** branch ปัจจุบันคือ `main`, working tree สะอาด และยังไม่มี remote ชื่อ `origin`
+- **Command:** `git remote add origin https://github.com/Patllom/OTP.git`
+- **Verification:** `git remote get-url origin` คืน URL ตรงตามที่ผู้ใช้ให้ และ `git ls-remote --exit-code origin` exit 0
+- **Remote state:** ไม่พบ branch หรือ tag จาก `ls-remote`; repository ปลายทางดูเป็น repository ว่าง ณ เวลาที่ตรวจ
+- **External writes:** ไม่มี; commit ของโปรเจกต์ยังอยู่เฉพาะเครื่อง local
+- **Rollback:** `git remote remove origin`
