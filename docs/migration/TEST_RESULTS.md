@@ -33,6 +33,8 @@
 | macOS verify script before final Step 5 check | macOS 26.6.2 arm64 | PASS | SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors, tests 25/25 ผ่านก่อนเพิ่ม regression case ล่าสุด |
 | Fresh final Step 5 verification | macOS 26.6.2 arm64 | PASS | Bash syntax ผ่าน; restore ผ่าน, build 0 warnings/0 errors, full suite 26/26 ผ่าน, 0 failed, 0 skipped |
 | macOS run script | macOS 26.6.2 arm64 | PASS | Kestrel Production ที่ port 5190; `GET /` ตอบ 200 `text/html`, 34,837 bytes และ marker ถูกต้อง |
+| Step 6 fresh macOS verification | macOS 26.6.2 arm64 | PASS | commit `c3994dc`, SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors, tests 26/26 ผ่าน |
+| Step 6 fresh macOS runtime routes | macOS 26.6.2 arm64 | PASS | Kestrel Production port 5191; compatibility routes 11/11 ตอบ HTTP 200 `text/html`; logo ตอบ 200 `image/png` |
 | PowerShell scripts on Windows | Windows 11 x64 | NOT RUN | เครื่อง Mac ไม่มี PowerShell; platform behavior tests และ runtime verification ต้องรันใน Step 6 |
 | Windows build/test | Windows 11 x64 | NOT RUN | ต้องยืนยันใน Step 6 บน Windows หรือ CI Windows runner |
 

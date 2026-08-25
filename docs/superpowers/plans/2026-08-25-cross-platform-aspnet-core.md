@@ -350,7 +350,7 @@ git commit -m "docs: add cross-platform setup and verification"
 - Consumes: scripts และ tests จาก Task 5
 - Produces: หลักฐาน Mac/Windows, final migration status และ rollback instructions
 
-- [ ] **Step 1: Fresh verification บน macOS arm64**
+- [x] **Step 1: Fresh verification บน macOS arm64**
 
 ```bash
 bash scripts/verify.sh
@@ -358,7 +358,7 @@ bash scripts/verify.sh
 
 Expected: restore, build และ tests exit 0
 
-- [ ] **Step 2: Runtime smoke test บน macOS**
+- [x] **Step 2: Runtime smoke test บน macOS**
 
 Start app, request compatibility routes และหยุด process อย่างสะอาด บันทึก SDK, OS, commit และผลลัพธ์
 

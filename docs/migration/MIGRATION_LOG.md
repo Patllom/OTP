@@ -121,3 +121,15 @@
 - **Step commit:** `b35dcc0` (`docs: add cross-platform setup and verification`); เพิ่ม/แก้ 10 files รวม 498 insertions โดย shell scripts ถูกบันทึกด้วย executable mode `100755`
 - **Files changed:** `scripts/run.sh`, `scripts/run.ps1`, `scripts/verify.sh`, `scripts/verify.ps1`, `README.md`, `tests/OTP.Web.Tests/DeveloperExperienceScriptTests.cs` และเอกสาร migration/plan
 - **Rollback:** revert commit ของ Step 5; runtime migration และ tests จาก Step 4 ยังคงอยู่
+
+## 2026-08-25 — Step 6: Cross-Platform Verification และส่งมอบ (กำลังดำเนินการ)
+
+- **Approval:** ผู้ใช้ตอบ “เริ่ม” หลังได้รับ approval gate สำหรับ Step 6
+- **Starting state:** branch `migration/aspnet-core-net10` ที่ commit `c3994dc`; migration worktree และ `main` สะอาด
+- **Fresh macOS environment:** macOS 26.6.2 build 25G83, arm64, workspace-local .NET SDK 10.0.400
+- **Fresh macOS verify:** `OTP_DOTNET=/Users/theerapat_k/Codex/OTP/.dotnet/dotnet bash scripts/verify.sh` ที่ commit `c3994dc` สำเร็จ; restore ผ่าน, build 0 warnings/0 errors และ tests 26/26 ผ่าน, 0 failed, 0 skipped
+- **Fresh macOS runtime:** `scripts/run.sh --urls http://127.0.0.1:5191` เริ่ม Kestrel ใน Production; compatibility routes 11/11 ตอบ HTTP 200 `text/html`; legacy logo ตอบ HTTP 200 `image/png`, 30,127 bytes; หยุด process ด้วย Ctrl+C อย่างสะอาด
+- **Windows runner inventory:** ไม่พบ `pwsh`, Windows PowerShell, Docker, Podman, QEMU หรือ GitHub CLI บนเครื่อง Mac นี้ จึงไม่มี local Windows execution environment
+- **Remote check:** `git ls-remote origin` ติดต่อ `https://github.com/Patllom/OTP.git` สำเร็จแต่ไม่มี refs; branch migration ยังอยู่เฉพาะ local และ Windows CI ยังเข้าถึง source ไม่ได้
+- **Current blocker:** acceptance criteria ต้องมีการรัน `verify.ps1` และ runtime smoke บน Windows จริง; ทางเลือกคืออนุมัติให้เพิ่ม Windows GitHub Actions และ push branch หรือให้ผู้ใช้รัน scripts บนเครื่อง Windows แล้วส่ง output กลับมา
+- **External writes:** ยังไม่มีการ push, สร้าง workflow run หรือเปลี่ยน remote state
