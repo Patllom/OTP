@@ -283,7 +283,7 @@ dotnet test tests/OTP.Web.Tests/OTP.Web.Tests.csproj
 
 Expected: 11 page cases (รวม root alias และ Error route), static-file test และ 9 controller contract cases ผ่านทั้งหมด
 
-- [ ] **Step 7: Commit Task 4**
+- [x] **Step 7: Commit Task 4**
 
 ```bash
 git add Views wwwroot tests docs/migration

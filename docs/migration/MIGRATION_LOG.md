@@ -99,5 +99,6 @@
 - **Targeted GREEN:** `RouteRenderingTests` ผ่าน 12/12
 - **Full verification:** Debug build สำเร็จด้วย 0 warnings/0 errors และ full test suite ผ่าน 21/21 (9 controller contracts + 11 page cases + 1 static-file case)
 - **Production runtime smoke:** Kestrel ที่ `http://127.0.0.1:5184` ตอบ HTTP 200 `text/html` ครบทั้ง 11 routes; `/asset/images/content/logo1.png` ตอบ HTTP 200, `image/png`, 30,127 bytes; หยุด process ด้วย Ctrl+C อย่างสะอาด
+- **Step commit:** `dd78fe9` (`feat: migrate views and static assets to ASP.NET Core`); 363 files changed โดย static files 351 รายการเป็น Git rename 100%
 - **Files changed:** `OTP.csproj`, `Controllers/HomeController.cs`, Razor shared/config files, `tests/OTP.Web.Tests/RouteRenderingTests.cs`, static directories ที่ย้าย และเอกสาร migration/plan
 - **Rollback:** revert commit ของ Step 4; static assets จะกลับไปตำแหน่ง legacy ด้วย Git rename history โดย Step 3 controller tests ยังคงอยู่
