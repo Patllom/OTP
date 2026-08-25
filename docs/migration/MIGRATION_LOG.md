@@ -170,5 +170,6 @@
 - **Targeted GREEN:** `SolutionConfigurationTests` ผ่าน 1/1 และยืนยัน solution tooling แสดง `tests/OTP.Web.Tests/OTP.Web.Tests.csproj`
 - **Solution verification:** `dotnet test OTT.sln --configuration Debug --no-restore` ค้นพบ `OTP.Web.Tests.dll` และผ่าน 27/27, 0 failed, 0 skipped
 - **Full macOS verification:** `scripts/verify.sh` ด้วย workspace-local .NET SDK 10.0.400 restore สำเร็จ, build 0 warnings/0 errors และ full suite ผ่าน 27/27
+- **Windows verification:** GitHub Actions run `32878509685` สำหรับ implementation commit `135ca4b` จบ `success`; PowerShell restore/build/test wrapper และ compatibility route smoke tests ผ่านทุกขั้น
 - **Scope boundary:** ยังไม่แก้ working-directory/global.json behavior ของ scripts, Development/Production environment, HTTPS/proxy configuration, production UI หรือ `main`
 - **Rollback:** revert การแก้ `OTT.sln`, regression test และบันทึก Step 1 นี้; migration implementation ก่อน review จะยังอยู่ครบ
