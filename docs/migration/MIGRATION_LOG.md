@@ -188,3 +188,17 @@
 - **Documentation:** README ระบุว่า wrappers เปลี่ยนไป project root เพื่อให้เรียกจาก directory อื่นได้โดยยังใช้ SDK policy จาก repository `global.json`
 - **Scope boundary:** ยังไม่เปลี่ยน Development/Production defaults, HTTPS/proxy contract, controller, routes, views, static assets หรือ `main`
 - **Rollback:** revert การแก้ scripts, regression tests, README และบันทึก Step 2 นี้; Step 1 solution discovery จะยังอยู่ครบ
+
+## 2026-08-26 — Post-PR Review Step 3: Development Default และ Production HTTPS Contract
+
+- **Approval:** ผู้ใช้สั่ง “ดำเนินการ” หลังได้รับขอบเขต environment tests, Development default, reverse-proxy/TLS documentation, macOS/Windows verification และข้อห้าม merge
+- **Official guidance:** ตรวจเอกสาร ASP.NET Core .NET 10 ทางการเรื่อง runtime environments, HTTPS, reverse proxies และ Kestrel security; environment ที่ไม่กำหนดจะ default เป็น Production และ forwarded headers ต้องจำกัด trusted proxies/networks
+- **Test-first RED:** เพิ่ม contract test ที่รัน wrapper จริงสองรอบ; default case fail เพราะ fake `dotnet` เห็น environment ว่าง 2/2 calls ขณะที่ configured Production case ถูกเตรียมไว้เพื่อป้องกันการทับค่า
+- **Implementation:** Bash export `ASPNETCORE_ENVIRONMENT` เป็น Development เฉพาะเมื่อไม่มีค่า; PowerShell กำหนด Development เฉพาะเมื่อ environment ว่าง; verify scripts และ `Program.cs` ไม่เปลี่ยน
+- **Targeted GREEN:** environment contract ผ่าน 1/1 และยืนยันทุก fake `dotnet` invocation เห็น Development ใน default run กับ Production ใน configured run
+- **Development runtime smoke:** เรียก run wrapper จาก `/tmp` โดยไม่กำหนด environment ที่ port 5193; log แสดง Development, หน้าแรก/โลโก้ตอบ HTTP 200 และ port ปิดสะอาด
+- **Production override smoke:** เรียก run wrapper จาก `/tmp` ด้วย `ASPNETCORE_ENVIRONMENT=Production` ที่ port 5194; log คง Production, หน้าแรก/โลโก้ตอบ HTTP 200 และ port ปิดสะอาด
+- **Full macOS verification:** workspace-local SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors, `scripts/verify.sh` และ solution-level tests ผ่าน 30/30
+- **Production contract:** เพิ่ม `docs/deployment/PRODUCTION_HTTPS.md`; public TLS/HTTP redirect/HSTS อยู่ที่ trusted edge, Kestrel อยู่ private, forwarded headers ต้องรอ deployment-specific KnownProxies/KnownNetworks และ middleware ordering
+- **Scope boundary:** ไม่ deploy, ไม่ออก certificate, ไม่เลือก hosting provider, ไม่เปิด unconditional HTTPS redirect/forwarded headers, ไม่แก้ UI หรือ `main`
+- **Rollback:** revert run wrappers, environment test, README, production contract และบันทึก Step 3 นี้; Step 1–2 จะยังอยู่ครบ

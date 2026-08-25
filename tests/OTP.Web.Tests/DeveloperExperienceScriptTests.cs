@@ -75,6 +75,31 @@ public sealed class DeveloperExperienceScriptTests
         Assert.Equal(2, File.ReadAllLines(fakeDotnet.LogFile).Length);
     }
 
+    [Fact]
+    public async Task RunScriptDefaultsToDevelopmentWithoutOverridingConfiguredEnvironment()
+    {
+        using var defaultEnvironmentDotnet = new FakeDotnet("10.0.400");
+        using var productionEnvironmentDotnet = new FakeDotnet("10.0.400");
+
+        var defaultResult = await RunPlatformScriptFromWorkingDirectoryAsync(
+            "run",
+            defaultEnvironmentDotnet,
+            ProjectRoot,
+            [],
+            applicationEnvironment: null);
+        var productionResult = await RunPlatformScriptFromWorkingDirectoryAsync(
+            "run",
+            productionEnvironmentDotnet,
+            ProjectRoot,
+            [],
+            applicationEnvironment: "Production");
+
+        Assert.True(defaultResult.ExitCode == 0, defaultResult.CombinedOutput);
+        Assert.True(productionResult.ExitCode == 0, productionResult.CombinedOutput);
+        AssertEnvironmentLog(defaultEnvironmentDotnet, "Development");
+        AssertEnvironmentLog(productionEnvironmentDotnet, "Production");
+    }
+
     public static TheoryData<string> PlatformScripts => new()
     {
         "run",
@@ -140,7 +165,8 @@ public sealed class DeveloperExperienceScriptTests
         string scriptName,
         FakeDotnet fakeDotnet,
         string workingDirectory,
-        IReadOnlyList<string> scriptArguments)
+        IReadOnlyList<string> scriptArguments,
+        string? applicationEnvironment = null)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -173,8 +199,14 @@ public sealed class DeveloperExperienceScriptTests
         startInfo.Environment["OTP_DOTNET"] = fakeDotnet.CommandFile;
         startInfo.Environment["OTP_TEST_DOTNET_LOG"] = fakeDotnet.LogFile;
         startInfo.Environment["OTP_TEST_DOTNET_WORKING_DIRECTORY_LOG"] = fakeDotnet.WorkingDirectoryLogFile;
+        startInfo.Environment["OTP_TEST_ASPNETCORE_ENVIRONMENT_LOG"] = fakeDotnet.EnvironmentLogFile;
         startInfo.Environment["OTP_TEST_DOTNET_VERSION"] = fakeDotnet.Version;
         startInfo.Environment["OTP_CONFIGURATION"] = "Debug";
+        startInfo.Environment.Remove("ASPNETCORE_ENVIRONMENT");
+        if (applicationEnvironment is not null)
+        {
+            startInfo.Environment["ASPNETCORE_ENVIRONMENT"] = applicationEnvironment;
+        }
 
         using var process = new Process { StartInfo = startInfo };
         process.Start();
@@ -186,6 +218,13 @@ public sealed class DeveloperExperienceScriptTests
         return new ScriptResult(
             process.ExitCode,
             $"{await standardOutput}{await standardError}");
+    }
+
+    private static void AssertEnvironmentLog(FakeDotnet fakeDotnet, string expectedEnvironment)
+    {
+        var environments = File.ReadAllLines(fakeDotnet.EnvironmentLogFile);
+        Assert.NotEmpty(environments);
+        Assert.All(environments, environment => Assert.Equal(expectedEnvironment, environment));
     }
 
     private static string FindProjectRoot()
@@ -218,6 +257,7 @@ public sealed class DeveloperExperienceScriptTests
 
             LogFile = Path.Combine(_temporaryDirectory, "dotnet-calls.log");
             WorkingDirectoryLogFile = Path.Combine(_temporaryDirectory, "dotnet-working-directories.log");
+            EnvironmentLogFile = Path.Combine(_temporaryDirectory, "aspnetcore-environments.log");
             CommandFile = Path.Combine(
                 _temporaryDirectory,
                 OperatingSystem.IsWindows() ? "dotnet.cmd" : "dotnet");
@@ -228,6 +268,7 @@ public sealed class DeveloperExperienceScriptTests
                     CommandFile,
                     "@echo off\r\n" +
                     ">>\"%OTP_TEST_DOTNET_WORKING_DIRECTORY_LOG%\" echo %CD%\r\n" +
+                    ">>\"%OTP_TEST_ASPNETCORE_ENVIRONMENT_LOG%\" echo(%ASPNETCORE_ENVIRONMENT%\r\n" +
                     ">>\"%OTP_TEST_DOTNET_LOG%\" echo %*\r\n" +
                     "if \"%~1\"==\"--version\" echo %OTP_TEST_DOTNET_VERSION%\r\n" +
                     "exit /b 0\r\n");
@@ -238,6 +279,7 @@ public sealed class DeveloperExperienceScriptTests
                     CommandFile,
                     "#!/usr/bin/env bash\n" +
                     "pwd -P >> \"$OTP_TEST_DOTNET_WORKING_DIRECTORY_LOG\"\n" +
+                    "printf '%s\\n' \"${ASPNETCORE_ENVIRONMENT:-}\" >> \"$OTP_TEST_ASPNETCORE_ENVIRONMENT_LOG\"\n" +
                     "printf '%s\\n' \"$*\" >> \"$OTP_TEST_DOTNET_LOG\"\n" +
                     "if [ \"${1:-}\" = \"--version\" ]; then\n" +
                     "  printf '%s\\n' \"${OTP_TEST_DOTNET_VERSION:-10.0.400}\"\n" +
@@ -251,6 +293,8 @@ public sealed class DeveloperExperienceScriptTests
         }
 
         public string CommandFile { get; }
+
+        public string EnvironmentLogFile { get; }
 
         public string LogFile { get; }
 

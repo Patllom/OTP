@@ -85,6 +85,8 @@ $env:ASPNETCORE_URLS = 'http://127.0.0.1:5180'
 
 Run/verify scripts จะเปลี่ยน working directory ไปที่ project root ก่อนตรวจ SDK และเรียก `dotnet` เสมอ จึงสามารถเรียก script ด้วย absolute path จาก directory อื่นได้โดยยังใช้ SDK policy จาก `global.json` ของ repository นี้
 
+Run scripts ใช้ `Development` เป็นค่าเริ่มต้นสำหรับ local preview แต่จะไม่ทับ `ASPNETCORE_ENVIRONMENT` ที่ผู้ใช้กำหนดไว้ production ต้องอยู่หลัง trusted reverse proxy/TLS termination ตาม [Production HTTPS Contract](docs/deployment/PRODUCTION_HTTPS.md); repository ยังไม่เปิด HTTPS redirect หรือเชื่อ forwarded headers โดยไม่มี deployment-specific proxy configuration
+
 ## ตรวจสอบด้วยคำสั่งมาตรฐาน
 
 `verify` scripts จะตรวจ SDK แล้วทำ restore, build และ test ตามลำดับ หากต้องการรันเอง:

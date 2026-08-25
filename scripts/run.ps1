@@ -10,6 +10,9 @@ $otpProject = Join-Path $otpProjectRoot 'OTP.csproj'
 $otpDotnet = if ($env:OTP_DOTNET) { $env:OTP_DOTNET } else { 'dotnet' }
 
 Set-Location -LiteralPath $otpProjectRoot
+if (-not $env:ASPNETCORE_ENVIRONMENT) {
+    $env:ASPNETCORE_ENVIRONMENT = 'Development'
+}
 
 try {
     Get-Command $otpDotnet -ErrorAction Stop | Out-Null
