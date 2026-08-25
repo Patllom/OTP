@@ -184,6 +184,7 @@
 - **Bash syntax:** `bash -n` ผ่านทั้ง `scripts/run.sh` และ `scripts/verify.sh`
 - **Outside-root macOS verification:** เรียก absolute `scripts/verify.sh` จาก `/tmp` ด้วย workspace-local .NET SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors และ full suite ผ่าน 29/29
 - **Outside-root macOS runtime:** เรียก absolute `scripts/run.sh` จาก `/tmp` ที่ port 5192; content root เป็น migration worktree, หน้าแรกตอบ HTTP 200 พร้อม marker, logo ตอบ HTTP 200 `image/png` และ process/port ปิดสะอาด
+- **Windows verification:** GitHub Actions run `32879477776` สำหรับ implementation commit `0d0620e` จบ `success`; PowerShell restore/build/test wrapper รวม working-directory regression และ compatibility route smoke tests ผ่านทุกขั้น
 - **Documentation:** README ระบุว่า wrappers เปลี่ยนไป project root เพื่อให้เรียกจาก directory อื่นได้โดยยังใช้ SDK policy จาก repository `global.json`
 - **Scope boundary:** ยังไม่เปลี่ยน Development/Production defaults, HTTPS/proxy contract, controller, routes, views, static assets หรือ `main`
 - **Rollback:** revert การแก้ scripts, regression tests, README และบันทึก Step 2 นี้; Step 1 solution discovery จะยังอยู่ครบ
