@@ -46,3 +46,9 @@
 - **Remote state:** ไม่พบ branch หรือ tag จาก `ls-remote`; repository ปลายทางดูเป็น repository ว่าง ณ เวลาที่ตรวจ
 - **External writes:** ไม่มี; commit ของโปรเจกต์ยังอยู่เฉพาะเครื่อง local
 - **Rollback:** `git remote remove origin`
+
+### Correction — Remote verification semantics
+
+- รายการเดิมระบุว่า `git ls-remote --exit-code origin` exit 0 ซึ่งไม่ถูกต้องสำหรับ remote ที่ไม่มี refs เพราะ option `--exit-code` สามารถคืน non-zero เมื่อไม่พบ refs
+- การตรวจที่ใช้ยืนยันจริงคือ `git ls-remote origin` ซึ่งติดต่อ GitHub สำเร็จและคืนรายการ 0 บรรทัด โดยไม่มี authentication/network error
+- ผลสรุปไม่เปลี่ยน: remote URL ถูกต้อง, เชื่อมต่อได้ และ repository ปลายทางยังไม่มี branch/tag ณ เวลาที่ตรวจ
