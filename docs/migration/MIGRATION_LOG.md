@@ -199,6 +199,7 @@
 - **Development runtime smoke:** เรียก run wrapper จาก `/tmp` โดยไม่กำหนด environment ที่ port 5193; log แสดง Development, หน้าแรก/โลโก้ตอบ HTTP 200 และ port ปิดสะอาด
 - **Production override smoke:** เรียก run wrapper จาก `/tmp` ด้วย `ASPNETCORE_ENVIRONMENT=Production` ที่ port 5194; log คง Production, หน้าแรก/โลโก้ตอบ HTTP 200 และ port ปิดสะอาด
 - **Full macOS verification:** workspace-local SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors, `scripts/verify.sh` และ solution-level tests ผ่าน 30/30
+- **Windows verification:** GitHub Actions run `32880635141` สำหรับ implementation commit `0a72b6b` จบ `success`; PowerShell restore/build/test wrapper รวม environment contract และ compatibility route smoke tests ผ่านทุกขั้น
 - **Production contract:** เพิ่ม `docs/deployment/PRODUCTION_HTTPS.md`; public TLS/HTTP redirect/HSTS อยู่ที่ trusted edge, Kestrel อยู่ private, forwarded headers ต้องรอ deployment-specific KnownProxies/KnownNetworks และ middleware ordering
 - **Scope boundary:** ไม่ deploy, ไม่ออก certificate, ไม่เลือก hosting provider, ไม่เปิด unconditional HTTPS redirect/forwarded headers, ไม่แก้ UI หรือ `main`
 - **Rollback:** revert run wrappers, environment test, README, production contract และบันทึก Step 3 นี้; Step 1–2 จะยังอยู่ครบ
