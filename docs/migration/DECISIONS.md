@@ -41,3 +41,11 @@
 - **สถานะ:** ดำเนินการใน Step 4 ตามแผนที่ผู้ใช้อนุมัติ
 - **เหตุผล:** `UseStaticFiles()` ให้บริการไฟล์จาก `wwwroot`; การคงชื่อ directory เดิมไว้ใต้ web root ทำให้ Razor, CSS และ bookmark ที่อ้าง `/asset`, `/Content`, `/Scripts`, `/fonts` และ `/favicon.ico` ใช้ URL เดิมได้
 - **ผลที่ตามมา:** ตำแหน่ง source เปลี่ยนเป็น `wwwroot/...` แต่ public URL ไม่เปลี่ยน; Razor compilation ถูกเปิดถาวรและ temporary boundary ใน D-005 สิ้นสุดครบแล้ว
+
+## D-007: ใช้ thin platform wrappers ที่มี verification contract เดียวกัน
+
+- **วันที่:** 2026-08-25
+- **สถานะ:** ดำเนินการใน Step 5 ตามแผนที่ผู้ใช้อนุมัติ
+- **เหตุผล:** ผู้พัฒนาบน macOS และ Windows ควรเรียก workflow เดียวกันโดยไม่ต้องจำ path หรือ flag ของ restore/build/test และต้องหยุดทันทีเมื่อ SDK/คำสั่งใดล้มเหลว
+- **การตัดสินใจ:** Bash ใช้ `set -euo pipefail`, PowerShell ใช้ `$ErrorActionPreference = 'Stop'`; ทั้งคู่ resolve repository จากตำแหน่ง script, ตรวจ .NET SDK major อย่างน้อย 10 และรองรับ `OTP_DOTNET`/`OTP_CONFIGURATION`
+- **ผลที่ตามมา:** platform-selected automated tests ตรวจ observable command sequence ด้วย fake SDK; PowerShell runtime จริงยังต้องผ่าน Windows acceptance test ใน Step 6 ก่อนสรุป cross-platform

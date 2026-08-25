@@ -102,3 +102,21 @@
 - **Step commit:** `dd78fe9` (`feat: migrate views and static assets to ASP.NET Core`); 363 files changed โดย static files 351 รายการเป็น Git rename 100%
 - **Files changed:** `OTP.csproj`, `Controllers/HomeController.cs`, Razor shared/config files, `tests/OTP.Web.Tests/RouteRenderingTests.cs`, static directories ที่ย้าย และเอกสาร migration/plan
 - **Rollback:** revert commit ของ Step 4; static assets จะกลับไปตำแหน่ง legacy ด้วย Git rename history โดย Step 3 controller tests ยังคงอยู่
+
+## 2026-08-25 — Step 5: Cross-Platform Developer Experience
+
+- **Approval:** ผู้ใช้ตอบ “เริ่ม 5” หลังได้รับรายงานและ approval gate ของ Step 4
+- **Scope:** เพิ่ม run/verify wrappers และ README สำหรับ macOS/Windows เท่านั้น; ไม่มีการเปลี่ยน controller, routes, views หรือ static content และยังไม่เริ่ม final Windows verification ของ Step 6
+- **Test-first RED:** เพิ่ม `DeveloperExperienceScriptTests.cs` ซึ่งเลือก Bash บน Unix และ Windows PowerShell บน Windows แล้ว exercise scripts จริงผ่าน controlled fake `dotnet`; รอบแรก fail 4/4 เพราะ `scripts/run.*` และ `scripts/verify.*` ยังไม่มี
+- **Script contracts:** verify scripts ตรวจ SDK แล้วเรียก restore → build `--no-restore` → test `--no-build --no-restore`; run scripts ตรวจ SDK แล้วเรียก `dotnet run --project OTP.csproj` พร้อม forward application arguments
+- **Configuration:** ใช้ `OTP_DOTNET` เพื่อเลือก dotnet executable และ `OTP_CONFIGURATION` เพื่อเลือก Debug/Release โดยค่าเริ่มต้นคือ `dotnet` และ `Debug`; ทุก script resolve project path จากตำแหน่งไฟล์ จึงไม่ขึ้นกับ current working directory
+- **Initial GREEN:** developer-experience tests ผ่าน 4/4 หลังเพิ่ม Bash/PowerShell scripts และตั้ง executable bit ให้ shell scripts
+- **Path-with-spaces RED/GREEN:** review พบ Bash version-check ไม่ quote `OTP_DOTNET`; เพิ่ม regression test ซึ่ง fail 1/1 ด้วย controlled executable path ที่มีช่องว่าง จากนั้น quote command invocation และยืนยัน targeted 1/1 กับ developer-experience suite 5/5 ผ่าน
+- **README:** เพิ่มวิธีติดตั้ง/ตรวจ .NET 10, verify/run บน macOS และ Windows, Apple Silicon, PowerShell execution policy แบบ process-only, URL/หยุด server, custom port, manual commands, `OTP_DOTNET`, `OTP_CONFIGURATION` และ troubleshooting
+- **Bash syntax:** `bash -n scripts/run.sh` และ `bash -n scripts/verify.sh` ผ่าน
+- **Mac verify script:** รันด้วย workspace-local SDK 10.0.400; restore สำเร็จ, build 0 warnings/0 errors และ tests ผ่าน 25/25 ณ รอบก่อนเพิ่ม path-with-spaces case
+- **Fresh final Step 5 verification:** รัน `bash -n` ทั้งสอง shell scripts และ `scripts/verify.sh` หลังเพิ่ม regression ล่าสุด; restore สำเร็จ, build 0 warnings/0 errors และ full suite ผ่าน 26/26, 0 failed, 0 skipped
+- **Mac run script:** `scripts/run.sh --urls http://127.0.0.1:5190` เริ่ม Kestrel Production สำเร็จ; `GET /` ตอบ HTTP 200 `text/html`, 34,837 bytes และมี marker `วัตถุประสงค์โครงการ`; หยุดด้วย Ctrl+C อย่างสะอาด
+- **PowerShell status:** เครื่อง macOS นี้ไม่มี `pwsh` หรือ `powershell`; PowerShell scripts ถูกเตรียมและมี platform-selected behavior tests แต่ syntax/runtime จริงต้องรันบน Windows ใน Step 6 จึงยังเป็น `NOT RUN`
+- **Files changed:** `scripts/run.sh`, `scripts/run.ps1`, `scripts/verify.sh`, `scripts/verify.ps1`, `README.md`, `tests/OTP.Web.Tests/DeveloperExperienceScriptTests.cs` และเอกสาร migration/plan
+- **Rollback:** revert commit ของ Step 5; runtime migration และ tests จาก Step 4 ยังคงอยู่

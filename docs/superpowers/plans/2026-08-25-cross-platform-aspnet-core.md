@@ -303,15 +303,15 @@ git commit -m "feat: migrate views and static assets to ASP.NET Core"
 - Consumes: buildable `OTP.csproj` และ test project
 - Produces: documented platform-neutral setup/run/verify commands
 
-- [ ] **Step 1: เขียน shell verification script**
+- [x] **Step 1: เขียน shell verification script**
 
 `scripts/verify.sh` ต้องใช้ `set -euo pipefail` แล้วรัน restore, build `--no-restore` และ test `--no-build`
 
-- [ ] **Step 2: เขียน PowerShell verification script**
+- [x] **Step 2: เขียน PowerShell verification script**
 
 `scripts/verify.ps1` ต้องใช้ `$ErrorActionPreference = 'Stop'` และรันชุดคำสั่งเทียบเท่า shell script
 
-- [ ] **Step 3: เขียน run scripts**
+- [x] **Step 3: เขียน run scripts**
 
 ทั้งสอง script ต้องตรวจว่ามี .NET 10 SDK แล้วเรียก:
 
@@ -319,11 +319,11 @@ git commit -m "feat: migrate views and static assets to ASP.NET Core"
 dotnet run --project OTP.csproj
 ```
 
-- [ ] **Step 4: เขียน README สำหรับ macOS และ Windows**
+- [x] **Step 4: เขียน README สำหรับ macOS และ Windows**
 
 README ต้องระบุ .NET 10 SDK, คำสั่ง restore/build/test/run, URL local, วิธีหยุด server, Apple Silicon note, PowerShell execution note และ troubleshooting สำหรับ port conflict
 
-- [ ] **Step 5: รัน Mac scripts**
+- [x] **Step 5: รัน Mac scripts**
 
 ```bash
 bash scripts/verify.sh
