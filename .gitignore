@@ -18,6 +18,9 @@ coverage/
 # Workspace-local .NET SDK, if used
 .dotnet/
 
+# Isolated migration worktrees
+.worktrees/
+
 # Operating-system files
 .DS_Store
 Thumbs.db
@@ -25,4 +28,3 @@ Thumbs.db
 # Logs and temporary files
 *.log
 *.tmp
-
