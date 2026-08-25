@@ -17,6 +17,14 @@
 | Controller contract GREEN | macOS 26.6.2 arm64 | PASS | 9/9 actions ถูก discover และคืน `ViewResult` |
 | ASP.NET Core build after controller migration | macOS 26.6.2 arm64 | PASS | Debug build, 0 warnings, 0 errors |
 | Test dependency vulnerability audit | NuGet sources | PASS | ไม่พบ vulnerable direct/transitive packages ณ เวลาที่ตรวจ |
+| Razor/routes/static RED | macOS 26.6.2 arm64 | EXPECTED FAIL | 12/12 cases fail: legacy/root pages 10 cases เป็น 500, Error และ logo เป็น 404 ก่อน migration |
+| Version-controlled asset move inventory | Git worktree | PASS | `wwwroot/asset` ตรงกับ pre-Step-4 Git tree 321/321; baseline รายการที่ 322 คือ ignored `Thumbs.db` |
+| Razor compile after compatibility edits | macOS 26.6.2 arm64 | PASS | Debug build, 0 warnings, 0 errors |
+| Initial route GREEN attempt | macOS 26.6.2 arm64 | DIAGNOSTIC FAIL | ผ่าน Error/static 2 cases; legacy pages 10 cases เป็น 500 เพราะ layout render section `Scripts` ซ้ำ |
+| Route rendering and static contract GREEN | macOS 26.6.2 arm64 | PASS | 12/12 cases ผ่านหลังลบ duplicate section invocation |
+| Full ASP.NET Core test suite after view migration | macOS 26.6.2 arm64 | PASS | 21/21 tests ผ่าน, 0 failed, 0 skipped |
+| Production runtime compatibility routes | macOS 26.6.2 arm64 | PASS | Kestrel Production: 11/11 routes ตอบ HTTP 200 `text/html` |
+| Production runtime static logo | macOS 26.6.2 arm64 | PASS | legacy URL ตอบ HTTP 200, `image/png`, 30,127 bytes |
 | Windows build/test | Windows 11 x64 | NOT RUN | ต้องยืนยันใน Step 6 บน Windows หรือ CI Windows runner |
 
 กติกา: `NOT RUN` ไม่ถือว่า PASS และห้ามสรุปว่า cross-platform สมบูรณ์จนกว่า Mac และ Windows จะผ่าน build/test ตาม acceptance criteria

@@ -84,3 +84,20 @@
 - **Step commit:** `27aa481` (`test: migrate and verify Home controller`)
 - **Deferred to Step 4:** HTTP route responses, Razor compilation/rendering และ static assets
 - **Rollback:** revert commit ของ Step 3; Step 2 scaffold และ legacy baseline ไม่ได้รับผลกระทบ
+
+## 2026-08-25 — Step 4: Razor Views และ Static Assets
+
+- **Approval:** ผู้ใช้ตอบ “เริ่ม” หลังได้รับรายงาน Step 3 และขอบเขต Step 4
+- **Scope:** เปิด Razor compilation, ทำให้ legacy views render บน ASP.NET Core, เพิ่ม Error route, ย้าย static assets เข้า `wwwroot` โดยรักษา public URLs และเพิ่ม HTTP integration tests; ไม่มีการ redesign หรือเปลี่ยนเนื้อหาหน้า
+- **Test-first RED:** เพิ่ม `RouteRenderingTests.cs` สำหรับ 11 page cases (รวม `/`, legacy Home URLs และ `/Home/Error`) กับ static logo 1 case แล้วรันเฉพาะ test class; ผลคือ fail 12/12 ตาม boundary เดิม: 10 หน้าเป็น HTTP 500, Error route เป็น 404 และ logo เป็น 404
+- **Razor migration:** นำ `RazorCompileOnBuild=false` และ `RazorCompileOnPublish=false` ออก, เพิ่ม `Views/_ViewImports.cshtml`, เพิ่ม `HomeController.Error()`, กำหนด Error view เป็น layout-free, ลบ legacy `Views/Web.config` และแทนที่ `Styles.Render`/`Scripts.Render`/legacy link helpers ใน fallback layout
+- **Static migration:** ใช้ `git mv` ย้าย `asset/`, `Content/`, `Scripts/`, `fonts/` และ `favicon.ico` เข้า `wwwroot/`; ชื่อใต้ web root เดิมไม่เปลี่ยน จึงยัง request `/asset/...`, `/Content/...`, `/Scripts/...`, `/fonts/...` และ `/favicon.ico` ได้
+- **Asset inventory reconciliation:** baseline filesystem count 322 รายการประกอบด้วย site assets ที่อยู่ใน Git 321 ไฟล์และ ignored Windows thumbnail cache `asset/images/Thumbs.db` 1 ไฟล์; เปรียบเทียบ `git ls-tree` กับ `wwwroot/asset` แล้วพบว่า version-controlled site assets ถูกย้ายครบ 321/321 โดย `Thumbs.db` ไม่เคยอยู่ใน migration worktree
+- **Build after Razor enablement:** `dotnet build OTP.csproj --no-restore` สำเร็จด้วย 0 warnings และ 0 errors
+- **Observed integration defect:** รอบ GREEN แรกผ่าน Error/static 2 cases แต่ legacy pages 10 cases เป็น HTTP 500; stack trace ระบุ `_LayoutMain.cshtml` เรียก section `Scripts` ซ้ำ
+- **Root-cause verification:** `rg` พบ existing `@RenderSection("Scripts", false)` ที่บรรทัดเดิมประมาณ 305 และ `RenderSectionAsync` ที่เพิ่มใหม่ท้าย layout; แก้ขั้นต่ำโดยลบเฉพาะ invocation ที่เพิ่มซ้ำ
+- **Targeted GREEN:** `RouteRenderingTests` ผ่าน 12/12
+- **Full verification:** Debug build สำเร็จด้วย 0 warnings/0 errors และ full test suite ผ่าน 21/21 (9 controller contracts + 11 page cases + 1 static-file case)
+- **Production runtime smoke:** Kestrel ที่ `http://127.0.0.1:5184` ตอบ HTTP 200 `text/html` ครบทั้ง 11 routes; `/asset/images/content/logo1.png` ตอบ HTTP 200, `image/png`, 30,127 bytes; หยุด process ด้วย Ctrl+C อย่างสะอาด
+- **Files changed:** `OTP.csproj`, `Controllers/HomeController.cs`, Razor shared/config files, `tests/OTP.Web.Tests/RouteRenderingTests.cs`, static directories ที่ย้าย และเอกสาร migration/plan
+- **Rollback:** revert commit ของ Step 4; static assets จะกลับไปตำแหน่ง legacy ด้วย Git rename history โดย Step 3 controller tests ยังคงอยู่

@@ -217,30 +217,31 @@ git commit -m "test: preserve legacy MVC routes"
 ### Task 4: Razor Views และ Static Assets
 
 **Files:**
+- Modify: `Controllers/HomeController.cs`
+- Modify: `OTP.csproj`
 - Modify: `Views/**/*.cshtml`
 - Create: `Views/_ViewImports.cshtml`
 - Move: `asset/` to `wwwroot/asset/`
 - Move when referenced: `Content/`, `Scripts/`, `fonts/`, `favicon.ico` to `wwwroot/`
-- Modify: `tests/OTP.Web.Tests/RouteCompatibilityTests.cs`
-- Create: `tests/OTP.Web.Tests/StaticFileTests.cs`
+- Create: `tests/OTP.Web.Tests/RouteRenderingTests.cs`
 
 **Interfaces:**
 - Consumes: HomeController routes จาก Task 3
 - Produces: rendered HTML และ public static URLs เดิม
 
-- [ ] **Step 1: เพิ่ม page-marker assertions ให้ route tests**
+- [x] **Step 1: เขียน HTTP page-marker, error-route และ static-file tests**
 
-แต่ละหน้า assertion ต้องตรวจข้อความหัวข้อจริงของหน้านั้น ไม่ใช้เพียง status code
+แต่ละหน้า assertion ต้องตรวจ HTTP 200, `text/html` และข้อความ/asset marker จริงของหน้านั้น รวม `/` และ legacy Home URLs ทั้งหมด เพิ่ม `/Home/Error` เพื่อปกป้อง production exception-handler target และตรวจ logo URL แยกด้วย content type `image/png`
 
-- [ ] **Step 2: รัน tests และยืนยัน Razor compilation failures**
+- [x] **Step 2: รัน tests และยืนยัน Razor compilation failures**
 
 ```bash
 dotnet test tests/OTP.Web.Tests/OTP.Web.Tests.csproj
 ```
 
-Expected: FAIL ด้วย Razor/API/static path ที่ยังไม่ compatible
+Expected: page cases fail ด้วย HTTP 500/404 เพราะ Razor ยังไม่ compile และ Error action ยังไม่มี; static-file case fail ด้วย HTTP 404
 
-- [ ] **Step 3: เพิ่ม ASP.NET Core tag helpers และปรับ Razor syntax**
+- [x] **Step 3: เพิ่ม ASP.NET Core tag helpers และปรับ Razor syntax**
 
 `Views/_ViewImports.cshtml`:
 
@@ -248,9 +249,9 @@ Expected: FAIL ด้วย Razor/API/static path ที่ยังไม่ co
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 ```
 
-แทนที่การต่อ URL แบบ `@Url.Content("~/")Home/...` ด้วย `asp-controller`/`asp-action` หรือ `Url.Action` โดยไม่เปลี่ยน destination
+เปิด Razor build/publish compilation, เพิ่ม `Error()` action, ลบ legacy `Views/Web.config`, แทนที่ `Styles.Render`/`Scripts.Render` ใน fallback layout และปรับ URL syntax ที่ไม่ compatible โดยไม่เปลี่ยน destination
 
-- [ ] **Step 4: ย้าย static directories ด้วย Git**
+- [x] **Step 4: ย้าย static directories ด้วย Git**
 
 ```bash
 mkdir -p wwwroot
@@ -261,7 +262,7 @@ git mv fonts wwwroot/fonts
 git mv favicon.ico wwwroot/favicon.ico
 ```
 
-- [ ] **Step 5: เขียน static-file integration test**
+- [x] **Step 5: ยืนยัน static-file integration contract**
 
 ```csharp
 [Fact]
@@ -273,14 +274,14 @@ public async Task ProjectLogoIsServed()
 }
 ```
 
-- [ ] **Step 6: รัน build และ tests จนผ่านทั้งชุด**
+- [x] **Step 6: รัน build และ tests จนผ่านทั้งชุด**
 
 ```bash
 dotnet build OTP.csproj
 dotnet test tests/OTP.Web.Tests/OTP.Web.Tests.csproj
 ```
 
-Expected: 10 route cases และ static-file test ผ่านทั้งหมด
+Expected: 11 page cases (รวม root alias และ Error route), static-file test และ 9 controller contract cases ผ่านทั้งหมด
 
 - [ ] **Step 7: Commit Task 4**
 

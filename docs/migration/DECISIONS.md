@@ -34,3 +34,10 @@
 - **เหตุผล:** scaffold checkpoint ที่ commit ทั้งที่ build fail จะทำให้แยก regression จาก legacy incompatibility ไม่ได้
 - **การตัดสินใจ:** ยกเว้น `Controllers/**/*.cs` จาก compilation และปิด Razor build/publish compilation ชั่วคราว โดยไม่ลบ controller หรือ views เดิม
 - **เงื่อนไขสิ้นสุด:** Step 3 ต้องนำ controller กลับเข้า compilation และ Step 4 ต้องเปิด Razor compilation ก่อนสรุป migration
+
+## D-006: ให้ ASP.NET Core web root รักษา static public URLs เดิม
+
+- **วันที่:** 2026-08-25
+- **สถานะ:** ดำเนินการใน Step 4 ตามแผนที่ผู้ใช้อนุมัติ
+- **เหตุผล:** `UseStaticFiles()` ให้บริการไฟล์จาก `wwwroot`; การคงชื่อ directory เดิมไว้ใต้ web root ทำให้ Razor, CSS และ bookmark ที่อ้าง `/asset`, `/Content`, `/Scripts`, `/fonts` และ `/favicon.ico` ใช้ URL เดิมได้
+- **ผลที่ตามมา:** ตำแหน่ง source เปลี่ยนเป็น `wwwroot/...` แต่ public URL ไม่เปลี่ยน; Razor compilation ถูกเปิดถาวรและ temporary boundary ใน D-005 สิ้นสุดครบแล้ว
