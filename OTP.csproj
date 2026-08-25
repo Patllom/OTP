@@ -9,8 +9,10 @@
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
   </PropertyGroup>
 
-  <!-- Re-enable the legacy controller in Step 3 after its ASP.NET Core migration. -->
+  <!-- Keep nested test sources and build outputs out of the web project. -->
   <ItemGroup>
-    <Compile Remove="Controllers/**/*.cs" />
+    <Compile Remove="tests/**/*.cs" />
+    <Content Remove="tests/**" />
+    <None Remove="tests/**" />
   </ItemGroup>
 </Project>

@@ -156,58 +156,56 @@ git commit -m "build: scaffold ASP.NET Core application"
 
 **Files:**
 - Modify: `Controllers/HomeController.cs`
+- Modify: `OTP.csproj`
 - Create: `tests/OTP.Web.Tests/OTP.Web.Tests.csproj`
-- Create: `tests/OTP.Web.Tests/RouteCompatibilityTests.cs`
+- Create: `tests/OTP.Web.Tests/HomeControllerContractTests.cs`
 
 **Interfaces:**
 - Consumes: `public partial class Program` และ conventional route จาก Task 2
-- Produces: `HomeController` actions เดิมและ test client ผ่าน `WebApplicationFactory<Program>`
+- Produces: ASP.NET Core `HomeController` actions เดิมและ action-descriptor test host ผ่าน `WebApplicationFactory<Program>`
 
-- [ ] **Step 1: สร้าง xUnit integration test project**
+- [x] **Step 1: สร้าง xUnit integration test project และแยก test sources จาก web compilation**
 
-Test project target `net10.0` และอ้างอิง `OTP.csproj`, `Microsoft.AspNetCore.Mvc.Testing` และ `Microsoft.NET.Test.Sdk`
+Test project target `net10.0` และอ้างอิง `OTP.csproj`, `Microsoft.AspNetCore.Mvc.Testing` 10.0.11, `Microsoft.NET.Test.Sdk` 17.14.1, xUnit 2.9.3 และ xUnit runner 3.1.4 ส่วน `OTP.csproj` ต้อง exclude `tests/**/*.cs` เพื่อไม่ compile test source ซ้ำใน web assembly
 
-- [ ] **Step 2: เขียน failing route theory**
+- [x] **Step 2: เขียน failing controller contract theory**
 
 ```csharp
 [Theory]
-[InlineData("/")]
-[InlineData("/Home/Index")]
-[InlineData("/Home/objective")]
-[InlineData("/Home/scopeofwork")]
-[InlineData("/Home/eventpic")]
-[InlineData("/Home/knowledgetech")]
-[InlineData("/Home/information")]
-[InlineData("/Home/projectresult")]
-[InlineData("/Home/About")]
-[InlineData("/Home/Contact")]
-public async Task LegacyRouteReturnsSuccess(string path)
+[MemberData(nameof(LegacyActions))]
+public void LegacyActionPreservesMvcViewContract(string actionName)
 {
-    var response = await _client.GetAsync(path);
-    response.EnsureSuccessStatusCode();
-    Assert.Equal("text/html", response.Content.Headers.ContentType?.MediaType);
+    using var scope = _factory.Services.CreateScope();
+    var provider = scope.ServiceProvider.GetRequiredService<IActionDescriptorCollectionProvider>();
+    var descriptor = Assert.Single(provider.ActionDescriptors.Items
+        .OfType<ControllerActionDescriptor>()
+        .Where(item => item.ControllerName == "Home" && item.ActionName == actionName));
+    var controller = Activator.CreateInstance(descriptor.ControllerTypeInfo.AsType());
+    var result = descriptor.MethodInfo.Invoke(controller, null);
+    Assert.IsType<ViewResult>(result);
 }
 ```
 
-- [ ] **Step 3: รัน test และยืนยันว่า fail ด้วย legacy controller incompatibility**
+- [x] **Step 3: รัน test และยืนยัน RED เพราะ controller ยังไม่ถูก discover**
 
 ```bash
 dotnet test tests/OTP.Web.Tests/OTP.Web.Tests.csproj
 ```
 
-Expected: FAIL ก่อนเปลี่ยน `System.Web.Mvc` เป็น `Microsoft.AspNetCore.Mvc`
+Expected: FAIL ทั้ง 9 cases ที่ `Assert.Single()` เพราะ controller ยังถูก exclude จาก web assembly
 
-- [ ] **Step 4: ย้าย HomeController แบบ minimal**
+- [x] **Step 4: ย้าย HomeController แบบ minimal**
 
-เปลี่ยน namespace import และ return types เป็น ASP.NET Core โดยคง action names และ `ViewBag.Message`
+เปลี่ยน namespace import และ return types เป็น ASP.NET Core โดยคง action names และ `ViewBag.Message` จากนั้นนำ `<Compile Remove="Controllers/**/*.cs" />` ออกจาก `OTP.csproj`
 
-- [ ] **Step 5: รัน route tests**
+- [x] **Step 5: รัน tests และ build เพื่อยืนยัน GREEN**
 
 ```bash
 dotnet test tests/OTP.Web.Tests/OTP.Web.Tests.csproj
+dotnet build OTP.csproj --no-restore
 ```
 
-Expected: controller compile สำเร็จ; view/static failures ที่เหลือถูกบันทึกสำหรับ Task 4
+Expected: 9/9 test cases ผ่านและ build สำเร็จด้วย 0 warnings/0 errors; Razor rendering ยังถูก defer ไป Task 4
 
 - [ ] **Step 6: Commit Task 3**
 

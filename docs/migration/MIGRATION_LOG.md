@@ -68,3 +68,18 @@
 - **Step commit:** `b914d31` (`build: scaffold ASP.NET Core application`)
 - **Production routes:** ยังไม่เปิดใช้งานใน Step 2 เพราะ controller/views จะย้ายใน Step 3–4
 - **Rollback:** revert commit ของ Step 2 บน branch migration หรือลบ worktree/branch โดย baseline บน `main` ไม่ได้รับผลกระทบ
+
+## 2026-08-25 — Step 3: Controller และ Action Discovery Tests
+
+- **Approval:** ผู้ใช้ตอบ “อนุมัติ” หลังได้รับขอบเขต Step 3 ที่แยก controller migration ออกจาก Razor rendering
+- **Test stack:** `Microsoft.AspNetCore.Mvc.Testing` 10.0.11, `Microsoft.NET.Test.Sdk` 17.14.1, xUnit 2.9.3 และ xUnit runner 3.1.4
+- **Test boundary:** ใช้ `WebApplicationFactory<Program>`, `IActionDescriptorCollectionProvider` และ controller instance จริง; ไม่มี mock และยังไม่ request/render Razor views
+- **Test setup correction 1:** RED รอบแรก compile error เพราะ test project ขาด implicit `Xunit` using; เพิ่ม `<Using Include="Xunit" />` แล้วรันใหม่
+- **Test setup correction 2:** แก้ xUnit analyzer warning ด้วย `Assert.Single(collection, predicate)` และ exclude `tests/**` จาก web project content/compile items เพื่อป้องกัน recursive test build outputs
+- **Verified RED:** 9/9 theory cases fail ที่ `Assert.Single()` เพราะไม่มี matching Home action descriptor ขณะ controller ยังถูก exclude; test run ไม่มี warning หลัง correction
+- **Implementation:** เปลี่ยน `Controllers/HomeController.cs` จาก `System.Web.Mvc` เป็น `Microsoft.AspNetCore.Mvc`, เปลี่ยน return type เป็น `IActionResult` และนำ controller กลับเข้า compilation โดยรักษา action names และ `ViewBag.Message`
+- **Verified GREEN:** 9/9 theory cases ผ่าน; แต่ละ action ถูก discover เป็น `Home` controller action และ invoke แล้วคืน `ViewResult`
+- **Build:** `dotnet build OTP.csproj --no-restore --configuration Debug` สำเร็จด้วย 0 warnings และ 0 errors
+- **Dependency audit:** `dotnet list ... package --vulnerable --include-transitive` ไม่พบ vulnerable packages จาก NuGet sources ปัจจุบัน
+- **Deferred to Step 4:** HTTP route responses, Razor compilation/rendering และ static assets
+- **Rollback:** revert commit ของ Step 3; Step 2 scaffold และ legacy baseline ไม่ได้รับผลกระทบ

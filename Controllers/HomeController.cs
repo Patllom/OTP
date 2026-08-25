@@ -1,49 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace OTT.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public IActionResult Index()
         {
             return View();
         }
-        public ActionResult objective()
+        public IActionResult objective()
         {
             return View();
         }
-        public ActionResult scopeofwork()
+        public IActionResult scopeofwork()
         {
             return View();
         }
-        public ActionResult eventpic()
+        public IActionResult eventpic()
         {
             return View();
         }
-        public ActionResult knowledgetech()
+        public IActionResult knowledgetech()
         {
             return View();
         }
-        public ActionResult information()
+        public IActionResult information()
         {
             return View();
         }
-        public ActionResult projectresult()
+        public IActionResult projectresult()
         {
             return View();
         }
-        public ActionResult About()
+        public IActionResult About()
         {
             ViewBag.Message = "Your application description page.";
 
             return View();
         }
 
-        public ActionResult Contact()
+        public IActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
 
