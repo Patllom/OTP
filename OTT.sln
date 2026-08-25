@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OTP", "OTP.csproj", "{D1BE3EB5-7205-48BE-96EF-0A1C4F4F7A6F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OTP.Web.Tests", "tests\OTP.Web.Tests\OTP.Web.Tests.csproj", "{F8B63537-3597-4220-B1A8-872EB37EBE7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{D1BE3EB5-7205-48BE-96EF-0A1C4F4F7A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1BE3EB5-7205-48BE-96EF-0A1C4F4F7A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1BE3EB5-7205-48BE-96EF-0A1C4F4F7A6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8B63537-3597-4220-B1A8-872EB37EBE7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8B63537-3597-4220-B1A8-872EB37EBE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8B63537-3597-4220-B1A8-872EB37EBE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8B63537-3597-4220-B1A8-872EB37EBE7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F8B63537-3597-4220-B1A8-872EB37EBE7B} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {23ED3588-181D-44FA-AA88-1CBCE569912B}

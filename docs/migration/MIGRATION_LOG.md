@@ -160,3 +160,15 @@
 - **Documentation verification:** ไม่พบ placeholder หรือ trailing whitespace, Markdown code fence ครบคู่, CSS block มีจำนวนวงเล็บปีกกาเปิด/ปิดเท่ากัน 51/51 และ local assets ที่อ้างอิงมีอยู่ครบ
 - **External-write boundary:** push เฉพาะ `migration/aspnet-core-net10`; ไม่มีการเปลี่ยน `main`, merge, tag, deploy หรือ release
 - **Rollback:** revert commit ของ design guide หรือลบ `design.md` และรายการ log นี้ โดยไม่กระทบ runtime migration
+
+## 2026-08-26 — Post-PR Review Step 1: Solution-Level Test Discovery
+
+- **Approval:** ผู้ใช้อนุมัติให้แก้ review findings ทีละ step และกำหนดให้เสนอขอบเขตก่อนเริ่มทุก step; รอบนี้ทำเฉพาะการเพิ่ม test project เข้า solution และหยุดก่อน Step 2
+- **Review finding:** `OTT.sln` มีเฉพาะ `OTP.csproj` ทำให้ `dotnet test OTT.sln` exit 0 โดยไม่ค้นพบหรือรัน migration tests
+- **Test-first RED:** เพิ่ม `SolutionConfigurationTests.SolutionIncludesWebTestProject`; targeted run fail 1/1 เพราะผล `dotnet sln OTT.sln list` มีเพียง `OTP.csproj`
+- **Implementation:** เพิ่ม `tests/OTP.Web.Tests/OTP.Web.Tests.csproj` เข้า `OTT.sln` ภายใต้ solution folder `tests` พร้อม Debug/Release `Any CPU` mappings โดยไม่แก้ production code
+- **Targeted GREEN:** `SolutionConfigurationTests` ผ่าน 1/1 และยืนยัน solution tooling แสดง `tests/OTP.Web.Tests/OTP.Web.Tests.csproj`
+- **Solution verification:** `dotnet test OTT.sln --configuration Debug --no-restore` ค้นพบ `OTP.Web.Tests.dll` และผ่าน 27/27, 0 failed, 0 skipped
+- **Full macOS verification:** `scripts/verify.sh` ด้วย workspace-local .NET SDK 10.0.400 restore สำเร็จ, build 0 warnings/0 errors และ full suite ผ่าน 27/27
+- **Scope boundary:** ยังไม่แก้ working-directory/global.json behavior ของ scripts, Development/Production environment, HTTPS/proxy configuration, production UI หรือ `main`
+- **Rollback:** revert การแก้ `OTT.sln`, regression test และบันทึก Step 1 นี้; migration implementation ก่อน review จะยังอยู่ครบ

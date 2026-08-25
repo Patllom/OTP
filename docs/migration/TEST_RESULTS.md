@@ -40,5 +40,9 @@
 | Windows runtime compatibility routes | Windows Server 2025 Datacenter x64 | PASS | Kestrel Production: compatibility routes 11/11 ตอบ HTTP 200 `text/html; charset=utf-8` |
 | Windows static logo and process cleanup | Windows Server 2025 Datacenter x64 | PASS | legacy logo ตอบ HTTP 200 `image/png`, 30,127 bytes และ `taskkill` ปิด process tree สำเร็จ |
 | Exact Windows 11 client-edition smoke | Windows 11 x64 | NOT RUN | Standard `windows-latest` x64 runner ที่อนุมัติเป็น Windows Server 2025; Windows x64 acceptance ผ่านแล้ว แต่ต้องรัน manual เพิ่มหากต้องการรับรอง client edition โดยชื่อ |
+| Post-review solution discovery RED | macOS 26.6.2 arm64 | EXPECTED FAIL | regression test fail 1/1 เพราะ `dotnet sln OTT.sln list` ไม่พบ `tests/OTP.Web.Tests/OTP.Web.Tests.csproj` |
+| Post-review solution discovery GREEN | macOS 26.6.2 arm64 | PASS | targeted regression ผ่าน 1/1 หลังเพิ่ม test project และ Debug/Release `Any CPU` mappings เข้า solution |
+| Post-review solution-level verification | macOS 26.6.2 arm64 | PASS | `dotnet test OTT.sln --configuration Debug --no-restore` ค้นพบ test assembly และผ่าน 27/27 |
+| Post-review Step 1 full macOS verification | macOS 26.6.2 arm64 | PASS | SDK 10.0.400; restore ผ่าน, build 0 warnings/0 errors และ `scripts/verify.sh` ผ่าน 27/27 |
 
 กติกา: `EXPECTED FAIL`/`DIAGNOSTIC FAIL` ด้านบนเป็นหลักฐาน test-first และ defect history ไม่ใช่สถานะปัจจุบัน ส่วน `NOT RUN` ไม่ถือว่า PASS ปัจจุบัน acceptance สำหรับ macOS arm64 และ Windows x64 ผ่าน build/test/run แล้ว; รายการ Windows 11 ที่เหลือเป็น edition-specific manual smoke ไม่ใช่ runtime blocker ของ acceptance ที่ผู้ใช้อนุมัติ
