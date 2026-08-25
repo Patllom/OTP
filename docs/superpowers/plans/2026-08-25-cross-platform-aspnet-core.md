@@ -63,7 +63,7 @@ shasum -c docs/migration/baseline-sha256.txt
 
 Expected: checksum ทุกไฟล์รายงาน `OK`
 
-- [ ] **Step 3: เริ่ม Local Git และสร้าง baseline commit**
+- [x] **Step 3: เริ่ม Local Git และสร้าง baseline commit**
 
 ```bash
 git init -b main

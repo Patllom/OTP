@@ -22,6 +22,8 @@
   - อ่าน actions จาก `Controllers/HomeController.cs`
 - **Observed result:** macOS 26.6.2 arm64, Git 2.50.1, ไม่มี .NET SDK/MSBuild, 13 views, 1 controller, 9 actions, 322 asset files รวม 94,789,916 bytes
 - **Checksum result:** `shasum -c docs/migration/baseline-sha256.txt` ผ่าน 382/382 ไฟล์
+- **Git result:** สร้าง Local Git repository บน branch `main`; initial baseline commit คือ `d0afeec` (`chore: capture legacy baseline and migration plan`)
+- **Git scope check:** commit มี 390 files; `packages/`, `bin/`, `obj/` และ `OTP.csproj.user` ถูก ignore และไม่อยู่ใน commit
 - **Files created:**
   - `.gitignore`
   - `.gitattributes`
