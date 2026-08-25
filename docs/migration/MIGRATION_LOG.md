@@ -81,5 +81,6 @@
 - **Verified GREEN:** 9/9 theory cases ผ่าน; แต่ละ action ถูก discover เป็น `Home` controller action และ invoke แล้วคืน `ViewResult`
 - **Build:** `dotnet build OTP.csproj --no-restore --configuration Debug` สำเร็จด้วย 0 warnings และ 0 errors
 - **Dependency audit:** `dotnet list ... package --vulnerable --include-transitive` ไม่พบ vulnerable packages จาก NuGet sources ปัจจุบัน
+- **Step commit:** `27aa481` (`test: migrate and verify Home controller`)
 - **Deferred to Step 4:** HTTP route responses, Razor compilation/rendering และ static assets
 - **Rollback:** revert commit ของ Step 3; Step 2 scaffold และ legacy baseline ไม่ได้รับผลกระทบ

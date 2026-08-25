@@ -207,7 +207,7 @@ dotnet build OTP.csproj --no-restore
 
 Expected: 9/9 test cases ผ่านและ build สำเร็จด้วย 0 warnings/0 errors; Razor rendering ยังถูก defer ไป Task 4
 
-- [ ] **Step 6: Commit Task 3**
+- [x] **Step 6: Commit Task 3**
 
 ```bash
 git add Controllers tests docs/migration
