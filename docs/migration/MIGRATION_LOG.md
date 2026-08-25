@@ -133,3 +133,7 @@
 - **Remote check:** `git ls-remote origin` ติดต่อ `https://github.com/Patllom/OTP.git` สำเร็จแต่ไม่มี refs; branch migration ยังอยู่เฉพาะ local และ Windows CI ยังเข้าถึง source ไม่ได้
 - **Current blocker:** acceptance criteria ต้องมีการรัน `verify.ps1` และ runtime smoke บน Windows จริง; ทางเลือกคืออนุมัติให้เพิ่ม Windows GitHub Actions และ push branch หรือให้ผู้ใช้รัน scripts บนเครื่อง Windows แล้วส่ง output กลับมา
 - **External writes:** ยังไม่มีการ push, สร้าง workflow run หรือเปลี่ยน remote state
+- **Windows CI approval:** ผู้ใช้อนุมัติให้เพิ่ม GitHub Actions, push เฉพาะ `migration/aspnet-core-net10`, ติดตาม Windows verification และห้าม merge/release
+- **Workflow preparation:** เพิ่ม `.github/workflows/windows-verify.yml` สำหรับ `windows-latest`; permissions `contents: read`, timeout 20 นาที, branch-specific/manual triggers, PowerShell verify และ runtime probes 11 routes + logo พร้อม process-tree cleanup
+- **Action provenance:** ตรวจ releases/tags ทางการและ pin `actions/checkout` v6.0.2 ที่ `de0fac2e...` กับ `actions/setup-dotnet` v6.0.0 ที่ `a98b5685...`
+- **Pre-push checks:** YAML parse ผ่าน, `git diff --check` ผ่าน, largest tracked blob ประมาณ 7.9 MB และ targeted history scan ไม่พบ credential/private key; `connectionStrings` ที่พบเป็น commented Visual Studio transform examples เท่านั้น

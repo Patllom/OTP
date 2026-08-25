@@ -342,6 +342,7 @@ git commit -m "docs: add cross-platform setup and verification"
 ### Task 6: Cross-Platform Verification และส่งมอบ
 
 **Files:**
+- Create: `.github/workflows/windows-verify.yml`
 - Modify: `docs/migration/TEST_RESULTS.md`
 - Modify: `docs/migration/MIGRATION_LOG.md`
 - Modify: `docs/migration/DECISIONS.md` เฉพาะเมื่อมี decision ใหม่
@@ -361,6 +362,10 @@ Expected: restore, build และ tests exit 0
 - [x] **Step 2: Runtime smoke test บน macOS**
 
 Start app, request compatibility routes และหยุด process อย่างสะอาด บันทึก SDK, OS, commit และผลลัพธ์
+
+- [x] **Step 2A: เตรียม Windows GitHub Actions ตาม external-write approval**
+
+Workflow ใช้ `windows-latest`, read-only repository permission, pinned official actions, `verify.ps1` และ runtime smoke probes โดย trigger เฉพาะ migration branch หรือ manual dispatch; ห้าม deploy, merge หรือ release
 
 - [ ] **Step 3: Fresh verification บน Windows 11 x64**
 

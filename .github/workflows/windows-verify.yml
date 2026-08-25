@@ -1,0 +1,125 @@
+name: Windows verification
+
+on:
+  push:
+    branches:
+      - migration/aspnet-core-net10
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-verification-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-windows:
+    name: Verify Windows
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up .NET 10 SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.400
+
+      - name: Record Windows and .NET environment
+        shell: powershell
+        run: |
+          Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsArchitecture
+          dotnet --info
+
+      - name: Restore, build, and test through PowerShell wrapper
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
+
+      - name: Run compatibility route smoke tests
+        shell: powershell
+        run: |
+          $baseUri = 'http://127.0.0.1:5192'
+          $env:ASPNETCORE_URLS = $baseUri
+          $serverOutput = Join-Path $env:RUNNER_TEMP 'otp-server-output.log'
+          $serverError = Join-Path $env:RUNNER_TEMP 'otp-server-error.log'
+          $runScript = Join-Path $env:GITHUB_WORKSPACE 'scripts/run.ps1'
+          $serverArguments = "-NoProfile -ExecutionPolicy Bypass -File `"$runScript`""
+          $serverProcess = Start-Process `
+            -FilePath 'powershell.exe' `
+            -ArgumentList $serverArguments `
+            -RedirectStandardOutput $serverOutput `
+            -RedirectStandardError $serverError `
+            -PassThru
+
+          try {
+              $ready = $false
+              foreach ($attempt in 1..30) {
+                  if ($serverProcess.HasExited) {
+                      break
+                  }
+
+                  try {
+                      $health = Invoke-WebRequest `
+                        -Uri "$baseUri/migration-health" `
+                        -UseBasicParsing `
+                        -TimeoutSec 2
+                      if ($health.StatusCode -eq 200) {
+                          $ready = $true
+                          break
+                      }
+                  }
+                  catch {
+                      Start-Sleep -Seconds 1
+                  }
+              }
+
+              if (-not $ready) {
+                  throw 'OTP did not become ready within the Windows smoke-test timeout.'
+              }
+
+              $routes = @(
+                  '/',
+                  '/Home/Index',
+                  '/Home/objective',
+                  '/Home/scopeofwork',
+                  '/Home/eventpic',
+                  '/Home/knowledgetech',
+                  '/Home/information',
+                  '/Home/projectresult',
+                  '/Home/About',
+                  '/Home/Contact',
+                  '/Home/Error'
+              )
+
+              foreach ($route in $routes) {
+                  $response = Invoke-WebRequest `
+                    -Uri "$baseUri$route" `
+                    -UseBasicParsing `
+                    -TimeoutSec 10
+                  $contentType = $response.Headers['Content-Type']
+                  if ($response.StatusCode -ne 200 -or -not $contentType.StartsWith('text/html')) {
+                      throw "Unexpected response for ${route}: $($response.StatusCode) $contentType"
+                  }
+                  Write-Host "$route $($response.StatusCode) $contentType"
+              }
+
+              $logo = Invoke-WebRequest `
+                -Uri "$baseUri/asset/images/content/logo1.png" `
+                -UseBasicParsing `
+                -TimeoutSec 10
+              $logoContentType = $logo.Headers['Content-Type']
+              if ($logo.StatusCode -ne 200 -or $logoContentType -ne 'image/png' -or $logo.RawContentLength -le 0) {
+                  throw "Unexpected logo response: $($logo.StatusCode) $logoContentType $($logo.RawContentLength) bytes"
+              }
+              Write-Host "/asset/images/content/logo1.png $($logo.StatusCode) $logoContentType $($logo.RawContentLength) bytes"
+          }
+          finally {
+              if (-not $serverProcess.HasExited) {
+                  taskkill.exe /PID $serverProcess.Id /T /F | Out-Host
+              }
+              if (Test-Path $serverOutput) { Get-Content $serverOutput }
+              if (Test-Path $serverError) { Get-Content $serverError }
+          }

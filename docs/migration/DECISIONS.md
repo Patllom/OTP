@@ -49,3 +49,12 @@
 - **เหตุผล:** ผู้พัฒนาบน macOS และ Windows ควรเรียก workflow เดียวกันโดยไม่ต้องจำ path หรือ flag ของ restore/build/test และต้องหยุดทันทีเมื่อ SDK/คำสั่งใดล้มเหลว
 - **การตัดสินใจ:** Bash ใช้ `set -euo pipefail`, PowerShell ใช้ `$ErrorActionPreference = 'Stop'`; ทั้งคู่ resolve repository จากตำแหน่ง script, ตรวจ .NET SDK major อย่างน้อย 10 และรองรับ `OTP_DOTNET`/`OTP_CONFIGURATION`
 - **ผลที่ตามมา:** platform-selected automated tests ตรวจ observable command sequence ด้วย fake SDK; PowerShell runtime จริงยังต้องผ่าน Windows acceptance test ใน Step 6 ก่อนสรุป cross-platform
+
+## D-008: ใช้ GitHub-hosted Windows runner สำหรับ final Windows acceptance
+
+- **วันที่:** 2026-08-25
+- **สถานะ:** ผู้ใช้อนุมัติ external push และ workflow ใน Step 6
+- **เหตุผล:** เครื่องพัฒนาเป็น macOS และไม่มี Windows VM/PowerShell/container runtime; การอ้างว่า cross-platform ต้องมี execution evidence บน Windows จริง
+- **การตัดสินใจ:** เพิ่ม `.github/workflows/windows-verify.yml` สำหรับ `windows-latest`, trigger เฉพาะ push ที่ branch `migration/aspnet-core-net10` และ manual dispatch, จำกัด permission เป็น `contents: read`, timeout 20 นาที และไม่มี deployment/merge/release step
+- **Supply-chain control:** pin `actions/checkout` v6.0.2 และ `actions/setup-dotnet` v6.0.0 ด้วย full commit SHA ที่ตรวจจาก repositories ทางการ
+- **Acceptance:** job ต้องรัน `scripts/verify.ps1`, ผ่าน Windows-selected script behavior tests และเปิด `scripts/run.ps1` เพื่อตรวจ 11 compatibility routes กับ static logo ก่อนปิด process tree
