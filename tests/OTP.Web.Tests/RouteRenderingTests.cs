@@ -52,4 +52,232 @@ public sealed class RouteRenderingTests : IClassFixture<WebApplicationFactory<Pr
         Assert.Equal("image/png", response.Content.Headers.ContentType?.MediaType);
         Assert.NotEmpty(await response.Content.ReadAsByteArrayAsync());
     }
+
+    [Fact]
+    public async Task EventPicturePageRendersEveryWorkshopPhotoFromLocalAssets()
+    {
+        string[] workshopPhotoNames =
+        [
+            "LINE_ALBUM_TDCworkshop1_260304_3.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_4.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_6.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_9.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_10.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_11.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_12.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_21.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_25.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_26.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_27.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_28.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_29.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_36.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_37.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_41.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_42.jpg",
+            "LINE_ALBUM_TDCworkshop1_260304_47.jpg"
+        ];
+
+        var pageResponse = await _client.GetAsync("/Home/eventpic");
+        var html = await pageResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+
+        for (var index = 0; index < workshopPhotoNames.Length; index++)
+        {
+            var photoName = workshopPhotoNames[index];
+            var photoPath = $"/asset/images/event/workshop1/{photoName}";
+
+            Assert.Contains(
+                $"src=\"{photoPath}\" alt=\"การประชุมเชิงปฏิบัติการ ครั้งที่ 1 ภาพที่ {index + 1}\"",
+                html);
+            Assert.Contains($"href=\"{photoPath}\"", html);
+
+            var photoResponse = await _client.GetAsync(photoPath);
+            Assert.Equal(HttpStatusCode.OK, photoResponse.StatusCode);
+            Assert.Equal("image/jpeg", photoResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await photoResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
+
+    [Fact]
+    public async Task EventPicturePageRendersEverySecondWorkshopPhotoFromLocalAssets()
+    {
+        string[] workshopPhotoNames =
+        [
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_5.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_8.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_10.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_16.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_19.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_20.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_22.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_25.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_26.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_35.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_29.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_40.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_49.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_52.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_53.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_56.jpg",
+            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_57.jpg"
+        ];
+
+        var pageResponse = await _client.GetAsync("/Home/eventpic");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+        Assert.Contains("การประชุมเชิงปฏิบัติการ ครั้งที่ 2", html);
+        Assert.DoesNotContain("encrypted-tbn0.gstatic.com", html);
+
+        for (var index = 0; index < workshopPhotoNames.Length; index++)
+        {
+            var photoName = workshopPhotoNames[index];
+            var photoPath = $"/asset/images/event/workshop2/{photoName}";
+
+            Assert.Contains(
+                $"src=\"{photoPath}\" alt=\"การประชุมเชิงปฏิบัติการ ครั้งที่ 2 ภาพที่ {index + 1}\"",
+                html);
+            Assert.Contains($"href=\"{photoPath}\"", html);
+
+            var photoResponse = await _client.GetAsync(photoPath);
+            Assert.Equal(HttpStatusCode.OK, photoResponse.StatusCode);
+            Assert.Equal("image/jpeg", photoResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await photoResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
+
+    [Fact]
+    public async Task InformationPageRendersSeventeenthIssueFromLocalAssets()
+    {
+        string[] issuePageNames =
+        [
+            "1.jpg",
+            "2.jpg",
+            "3.jpg",
+            "4.jpg",
+            "5.jpg"
+        ];
+
+        var pageResponse = await _client.GetAsync("/Home/information");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+        Assert.Contains("ข่าวประชาสัมพันธ์โครงการ ฉบับที่ 17", html);
+        Assert.Contains("href=\"#m17-modal\"", html);
+        Assert.Contains("id=\"m17-modal\"", html);
+        Assert.Contains("aria-label=\"ปิดข่าวประชาสัมพันธ์โครงการ ฉบับที่ 17\"", html);
+        Assert.Contains(
+            "src=\"/asset/images/event/m17/1.jpg\" alt=\"ข่าวประชาสัมพันธ์โครงการ ฉบับที่ 17\" style=\"width:100%;height:250px;\"",
+            html);
+
+        for (var index = 0; index < issuePageNames.Length; index++)
+        {
+            var pageName = issuePageNames[index];
+            var pagePath = $"/asset/images/event/m17/{pageName}";
+
+            Assert.Contains(
+                $"src=\"{pagePath}\" alt=\"ข่าวประชาสัมพันธ์โครงการ ฉบับที่ 17 หน้า {index + 1}\"",
+                html);
+
+            var imageResponse = await _client.GetAsync(pagePath);
+            Assert.Equal(HttpStatusCode.OK, imageResponse.StatusCode);
+            Assert.Equal("image/jpeg", imageResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
+
+    [Fact]
+    public async Task InformationPageRendersEighteenthIssueFromLocalAssets()
+    {
+        string[] issuePageNames =
+        [
+            "1.jpg",
+            "2.jpg"
+        ];
+
+        var pageResponse = await _client.GetAsync("/Home/information");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+        Assert.Contains("ข่าวประชาสัมพันธ์โครงการ ฉบับที่ 18", html);
+        Assert.Contains("href=\"#m18-modal\"", html);
+        Assert.Contains("id=\"m18-modal\"", html);
+
+        foreach (var pageName in issuePageNames)
+        {
+            var pagePath = $"/asset/images/event/m18/{pageName}";
+
+            Assert.Contains($"src=\"{pagePath}\"", html);
+
+            var imageResponse = await _client.GetAsync(pagePath);
+            Assert.Equal(HttpStatusCode.OK, imageResponse.StatusCode);
+            Assert.Equal("image/jpeg", imageResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
+
+    [Fact]
+    public async Task InformationPageRendersNineteenthIssueFromLocalAssets()
+    {
+        string[] issuePageNames =
+        [
+            "1.png",
+            "2.png",
+            "3.png"
+        ];
+
+        var pageResponse = await _client.GetAsync("/Home/information");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+        Assert.Contains("ข่าวประชาสัมพันธ์โครงการ ฉบับที่ 19", html);
+        Assert.Contains("href=\"#m19-modal\"", html);
+        Assert.Contains("id=\"m19-modal\"", html);
+
+        foreach (var pageName in issuePageNames)
+        {
+            var pagePath = $"/asset/images/event/m19/{pageName}";
+
+            Assert.Contains($"src=\"{pagePath}\"", html);
+
+            var imageResponse = await _client.GetAsync(pagePath);
+            Assert.Equal(HttpStatusCode.OK, imageResponse.StatusCode);
+            Assert.Equal("image/png", imageResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
+
+    [Fact]
+    public async Task InformationPageRendersTwentiethIssueFromLocalAssets()
+    {
+        string[] issuePageNames =
+        [
+            "1.png",
+            "2.png",
+            "3.png",
+            "4.png"
+        ];
+
+        var pageResponse = await _client.GetAsync("/Home/information");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+        Assert.Contains("ข่าวประชาสัมพันธ์โครงการ ฉบับที่ 20", html);
+        Assert.Contains("href=\"#m20-modal\"", html);
+        Assert.Contains("id=\"m20-modal\"", html);
+
+        foreach (var pageName in issuePageNames)
+        {
+            var pagePath = $"/asset/images/event/m20/{pageName}";
+
+            Assert.Contains($"src=\"{pagePath}\"", html);
+
+            var imageResponse = await _client.GetAsync(pagePath);
+            Assert.Equal(HttpStatusCode.OK, imageResponse.StatusCode);
+            Assert.Equal("image/png", imageResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
 }

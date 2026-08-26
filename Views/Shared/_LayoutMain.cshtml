@@ -19,6 +19,7 @@
     <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/jquery.mobile-menu.css">
     <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/style.css" media="all">
     <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/responsive.css" media="all">
+    <link rel="stylesheet" type="text/css" href="~/asset/stylesheet/site-navigation.css" media="all" asp-append-version="true">
     <link rel="stylesheet" href="https://use.typekit.net/hxi4fbo.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700" rel="stylesheet">
@@ -49,10 +50,6 @@
 
         .logo {
             background: #ffffff;
-        }
-
-        .header-container .fl-nav-menu {
-            width: 70%;
         }
 
         h2 {
@@ -89,7 +86,9 @@
                         <div class="fl-nav-menu">
                             <nav>
                                 <div class="mm-toggle-wrap">
-                                    <div class="mm-toggle"><i class="icon-align-justify"></i><span class="mm-label">Menu</span> </div>
+                                    <button type="button" class="mm-toggle" aria-controls="mobile-menu" aria-expanded="false" aria-label="เปิดเมนูหลัก">
+                                        <i class="icon-align-justify" aria-hidden="true"></i><span class="mm-label">Menu</span>
+                                    </button>
                                 </div>
                                 <div class="nav-inner">
                                     <!-- BEGIN NAV -->
@@ -297,10 +296,11 @@
     <script src="~/asset/js/bootstrap.min.js"></script>
     <script src="~/asset/js/parallax.js"></script>
     <script src="~/asset/js/revslider.js"></script>
-    <script src="~/asset/js/common.js"></script>
+    <script src="~/asset/js/common.js" asp-append-version="true"></script>
     <script src="~/asset/js/jquery.bxslider.min.js"></script>
     <script src="~/asset/js/owl.carousel.min.js"></script>
     <script src="~/asset/js/jquery.mobile-menu.min.js"></script>
+    <script src="~/asset/js/site-navigation.js" asp-append-version="true"></script>
     <script src="~/asset/js/countdown.js"></script>
     @RenderSection("Scripts", false)
     <script>

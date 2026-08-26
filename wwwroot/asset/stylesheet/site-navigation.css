@@ -1,0 +1,134 @@
+/* Project navigation overrides loaded after the legacy theme styles. */
+@media (max-width: 1365px) {
+    .header-container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 52px 52px;
+        align-items: center;
+        min-height: 80px;
+    }
+
+    .header-container::before,
+    .header-container::after {
+        display: none;
+    }
+
+    .header-container .logo {
+        float: none;
+        width: auto;
+        height: 80px;
+        padding: 0 8px;
+        line-height: 80px;
+        text-align: left;
+    }
+
+    .header-container .fl-nav-menu {
+        float: none;
+        clear: none;
+        width: 52px;
+        margin: 0;
+        background: #fff;
+    }
+
+    .header-container .fl-nav-menu nav {
+        width: 52px;
+        height: 52px;
+        margin: 0;
+    }
+
+    .header-container .nav-inner {
+        display: none;
+    }
+
+    .header-container .mm-toggle-wrap {
+        display: block;
+        width: 52px;
+    }
+
+    .header-container .mm-toggle {
+        display: inline-flex;
+        float: none;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        padding: 0;
+        color: #1176bc;
+        background: #fff;
+        border: 0;
+    }
+
+    .header-container .mm-toggle .mm-label {
+        display: none;
+    }
+
+    .header-container .fl-header-right {
+        position: static;
+        float: none;
+        width: 52px;
+        margin: 0;
+    }
+
+    .header-container .navbar-collapse {
+        display: block !important;
+        float: none;
+        width: 52px;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .header-container .navbar-form {
+        display: block;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .header-container .navbar-form .search-btn {
+        width: 52px;
+    }
+}
+
+@media (max-width: 767px) {
+    .header-container .logo img {
+        width: auto;
+        height: 60px !important;
+    }
+}
+
+@media (min-width: 1366px) {
+    .header-container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .header-container .logo {
+        flex: 0 0 18%;
+        width: 18%;
+    }
+
+    .header-container .fl-nav-menu {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: auto;
+    }
+
+    .header-container .fl-header-right {
+        flex: 0 0 76px;
+        width: 76px;
+    }
+
+    #nav {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    #nav > li {
+        flex: 0 0 auto;
+    }
+
+    #nav > li > a > span {
+        padding-right: 9px;
+        padding-left: 9px;
+    }
+}

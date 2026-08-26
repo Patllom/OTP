@@ -538,3 +538,158 @@ select:focus-visible {
 ## 11. Change policy
 
 หากต้องเปลี่ยนสีหลัก ฟอนต์ spacing, breakpoint หรือ component shape ให้แก้ design token และเอกสารนี้ก่อน แล้วจึงปรับ stylesheet/หน้าเว็บที่ใช้งาน การสร้าง variant ต้องตั้งชื่อตามหน้าที่ เช่น `.btn-secondary` หรือ `.section-muted` ไม่ใช้ชื่อจากสีอย่าง `.blue-button`
+
+## 12. Legacy header responsive navigation
+
+หน้า Razor เดิมใช้ navigation จาก legacy theme ซึ่งแต่ละรายการเป็น `inline-block` และเคยจำกัด `.fl-nav-menu` ไว้ที่ `70%` จึงทำให้ข้อความภาษาไทยทั้ง 6 รายการต้องขึ้นสองแถวแม้หน้าจอ desktop กว้าง `1440px`
+
+แนวทางที่อนุมัติจาก responsive-menu mockup:
+
+- Desktop ตั้งแต่ `1366px` ขึ้นไปใช้ Flex layout แบ่งพื้นที่เป็น logo, navigation และ search
+- รายการ navigation ต้องอยู่หนึ่งแถวด้วย `flex-wrap: nowrap`
+- Navigation ใช้พื้นที่ที่เหลือจริงแทนค่าความกว้าง `70%`
+- Logo ใช้พื้นที่ `18%` และ search สงวนพื้นที่ `76px`
+- ลด padding แนวนอนของลิงก์เหลือ `9px` เฉพาะ desktop เพื่อรองรับข้อความภาษาไทยโดยไม่ลดขนาดตัวอักษร
+- CSS override อยู่ที่ `/asset/stylesheet/site-navigation.css` และต้องโหลดหลัง `style.css` กับ `responsive.css`
+- ช่วงต่ำกว่า `1366px` ใช้ Header แบบสามคอลัมน์: logo, Hamburger `52px` และ search `52px`
+- Desktop navigation ถูกซ่อนในโหมด Hamburger; drawer เดิมยังมี top-level links ครบ 6 รายการ
+- Hamburger ต้องเป็น `<button>` ที่มี `aria-controls="mobile-menu"`, ซิงก์ `aria-expanded` และปิดด้วย `Escape` พร้อมคืน focus ได้
+- `common.js` ใช้ `WindowsMaxWidth: 1366` เพื่อไม่ปิด drawer เมื่อ resize ระหว่างขนาดที่ยังอยู่ในโหมด Hamburger
+- Navigation CSS/JavaScript ที่แก้ไขต้องใช้ `asp-append-version="true"` เพื่อป้องกัน client cache ค้างหลัง deploy
+
+Desktop CSS contract:
+
+```css
+@media (min-width: 1366px) {
+  .header-container {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .header-container .logo {
+    flex: 0 0 18%;
+    width: 18%;
+  }
+
+  .header-container .fl-nav-menu {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+  }
+
+  .header-container .fl-header-right {
+    flex: 0 0 76px;
+    width: 76px;
+  }
+
+  #nav {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  #nav > li {
+    flex: 0 0 auto;
+  }
+
+  #nav > li > a > span {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+}
+```
+
+เงื่อนไขตรวจรับ Desktop:
+
+- ที่ `1366px` และ `1440px` top-level navigation ทั้ง 6 รายการมีค่าแนวตั้งเดียวกัน
+- ขอบขวาของรายการสุดท้ายต้องไม่เกินขอบซ้ายของปุ่มค้นหา
+- Header ต้องไม่สูงขึ้นเป็น `160px` จากการ wrap; baseline หลังแก้ประมาณ `80.5px`
+
+Responsive Header CSS contract:
+
+```css
+@media (max-width: 1365px) {
+  .header-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 52px 52px;
+    align-items: center;
+    min-height: 80px;
+  }
+
+  .header-container::before,
+  .header-container::after {
+    display: none;
+  }
+
+  .header-container .logo {
+    float: none;
+    width: auto;
+    height: 80px;
+    padding: 0 8px;
+    line-height: 80px;
+    text-align: left;
+  }
+
+  .header-container .fl-nav-menu,
+  .header-container .fl-nav-menu nav,
+  .header-container .mm-toggle-wrap,
+  .header-container .mm-toggle,
+  .header-container .fl-header-right,
+  .header-container .navbar-collapse,
+  .header-container .navbar-form .search-btn {
+    width: 52px;
+  }
+
+  .header-container .fl-nav-menu nav,
+  .header-container .mm-toggle {
+    height: 52px;
+  }
+
+  .header-container .nav-inner {
+    display: none;
+  }
+
+  .header-container .mm-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #1176bc;
+    background: #fff;
+    border: 0;
+  }
+
+  .header-container .mm-toggle .mm-label {
+    display: none;
+  }
+
+  .header-container .fl-header-right {
+    position: static;
+    float: none;
+  }
+
+  .header-container .navbar-collapse,
+  .header-container .navbar-form {
+    display: block !important;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-container .logo img {
+    width: auto;
+    height: 60px !important;
+  }
+}
+```
+
+Responsive Header acceptance:
+
+- ตรวจที่ `320px`, `390px`, `768px`, `1024px` และ `1280px`: Desktop navigation ต้องไม่แสดง, Hamburger และ search ต้องแสดง
+- Header สูง `80px`, ไม่มี element ภายในล้นออกนอก Header และ control ทุกชิ้นอยู่ใน viewport
+- Drawer ที่ `320px` กว้าง `250px`, อยู่ภายใน viewport และมี top-level links 6 รายการ
+- เมื่อ drawer เปิด การ resize ภายใต้ `1366px` ต้องไม่ปิด drawer; เมื่อเข้า `1366px` ต้องปิดและคืน `aria-expanded="false"`
+- `Escape` ต้องปิด drawer และคืน focus ไปยัง Hamburger
+
+หมายเหตุ: การตรวจพบ horizontal overflow ของ legacy content/footer ที่ `768px` เป็นคนละปัญหากับ Header และยังไม่รวมใน navigation fix นี้

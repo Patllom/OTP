@@ -110,31 +110,80 @@
 
     <div class="row " style="margin-top:30px;">
         <div class="col-md-12">
-            <h4 class="text-center">  การประชุมกลุ่มย่อย ครั้งที่ 1 </h4>
+            <h4 class="text-center">  การประชุมเชิงปฏิบัติการ ครั้งที่ 1 </h4>
         </div>
-        <div class="col-md-3">
-            <div class="card" style="width: 25rem;">
-                <img class="card-img-top img-rounded" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s" style="width:100%;height:300px;object-fit:cover;object-position:center;">
-                <div class="card-body">
-                    <h4 class="card-title text-center" style="font-size:16px;">อยู่ระหว่างดำเนินการ</h4>
-                </div>
+        @{
+            var workshopPhotoNames = new[]
+            {
+                "LINE_ALBUM_TDCworkshop1_260304_3.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_4.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_6.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_9.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_10.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_11.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_12.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_21.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_25.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_26.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_27.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_28.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_29.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_36.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_37.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_41.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_42.jpg",
+                "LINE_ALBUM_TDCworkshop1_260304_47.jpg"
+            };
+        }
+
+        @for (var workshopPhotoIndex = 0; workshopPhotoIndex < workshopPhotoNames.Length; workshopPhotoIndex++)
+        {
+            var workshopPhotoName = workshopPhotoNames[workshopPhotoIndex];
+            var workshopPhotoPath = Url.Content($"~/asset/images/event/workshop1/{workshopPhotoName}");
+
+            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding: 3px;">
+                <a href="@workshopPhotoPath"><img class="card-img-top img-rounded" src="@workshopPhotoPath" alt="การประชุมเชิงปฏิบัติการ ครั้งที่ 1 ภาพที่ @(workshopPhotoIndex + 1)" style="width:100%;height:150px;object-fit:cover;object-position:center;"></a>
             </div>
-        </div>
+        }
         
     </div>
 
     <div class="row " style="margin-top:30px;">
         <div class="col-md-12">
-            <h4 class="text-center">การจัดฝึกอบรม ครั้งที่ 1 </h4>
+            <h4 class="text-center">การประชุมเชิงปฏิบัติการ ครั้งที่ 2 </h4>
         </div>
-        <div class="col-md-3">
-            <div class="card" style="width: 25rem;">
-                <img class="card-img-top img-rounded" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s" style="width:100%;height:300px;object-fit:cover;object-position:center;">
-                <div class="card-body">
-                    <h4 class="card-title text-center" style="font-size:16px;">อยู่ระหว่างดำเนินการ</h4>
-                </div>
+        @{
+            var workshop2PhotoNames = new[]
+            {
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_5.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_8.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_10.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_16.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_19.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_20.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_22.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_25.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_26.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_35.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_29.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_40.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_49.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_52.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_53.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_56.jpg",
+                "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_57.jpg"
+            };
+        }
+
+        @for (var workshop2PhotoIndex = 0; workshop2PhotoIndex < workshop2PhotoNames.Length; workshop2PhotoIndex++)
+        {
+            var workshop2PhotoName = workshop2PhotoNames[workshop2PhotoIndex];
+            var workshop2PhotoPath = Url.Content($"~/asset/images/event/workshop2/{workshop2PhotoName}");
+
+            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding: 3px;">
+                <a href="@workshop2PhotoPath"><img class="card-img-top img-rounded" src="@workshop2PhotoPath" alt="การประชุมเชิงปฏิบัติการ ครั้งที่ 2 ภาพที่ @(workshop2PhotoIndex + 1)" style="width:100%;height:150px;object-fit:cover;object-position:center;"></a>
             </div>
-        </div>
+        }
         
     </div>
 

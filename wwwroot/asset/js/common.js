@@ -135,7 +135,7 @@ jQuery(document).ready(function() {
         jQuery("#mobile-menu").mobileMenu({
             MenuWidth: 250,
             SlideSpeed: 300,
-            WindowsMaxWidth: 767,
+            WindowsMaxWidth: 1366,
             PagePush: !0,
             FromLeft: !0,
             Overlay: !0,
@@ -364,5 +364,4 @@ jQuery(window).on("load", function() {
                     e("#showSearchTerm").text(s.val()), t()
                 })
             })
-          
-    }(jQuery);    
+    }(jQuery);
