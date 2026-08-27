@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace OTP.Web.Tests;
@@ -53,6 +54,25 @@ public sealed class RouteRenderingTests : IClassFixture<WebApplicationFactory<Pr
         Assert.NotEmpty(await response.Content.ReadAsByteArrayAsync());
     }
 
+    [Theory]
+    [InlineData("/")]
+    [InlineData("/Home/knowledgetech")]
+    [InlineData("/Home/projectresult")]
+    public async Task PageImagesAreServedFromLocalAssets(string path)
+    {
+        var response = await _client.GetAsync(path);
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
+        var externalImageUrls = Regex.Matches(
+                html,
+                "<img\\b[^>]*\\bsrc=[\\\"'](?<url>https?://[^\\\"']+)[\\\"']",
+                RegexOptions.IgnoreCase)
+            .Select(match => match.Groups["url"].Value)
+            .ToArray();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Empty(externalImageUrls);
+    }
+
     [Fact]
     public async Task EventPicturePageRendersEveryWorkshopPhotoFromLocalAssets()
     {
@@ -105,23 +125,23 @@ public sealed class RouteRenderingTests : IClassFixture<WebApplicationFactory<Pr
     {
         string[] workshopPhotoNames =
         [
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_5.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_8.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_10.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_16.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_19.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_20.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_22.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_25.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_26.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_35.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_29.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_40.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_49.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_52.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_53.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_56.jpg",
-            "LINE_ALBUM_TDC Workshop2 (20-21พ.ค.69)_260604_57.jpg"
+            "workshop2-01.jpg",
+            "workshop2-02.jpg",
+            "workshop2-03.jpg",
+            "workshop2-04.jpg",
+            "workshop2-05.jpg",
+            "workshop2-06.jpg",
+            "workshop2-07.jpg",
+            "workshop2-08.jpg",
+            "workshop2-09.jpg",
+            "workshop2-10.jpg",
+            "workshop2-11.jpg",
+            "workshop2-12.jpg",
+            "workshop2-13.jpg",
+            "workshop2-14.jpg",
+            "workshop2-15.jpg",
+            "workshop2-16.jpg",
+            "workshop2-17.jpg"
         ];
 
         var pageResponse = await _client.GetAsync("/Home/eventpic");

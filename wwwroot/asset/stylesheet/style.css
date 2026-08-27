@@ -1783,7 +1783,7 @@ ul.level1 {
 	width: 100%;
 }
 .service-section1 {
-	background: url("../images/body-bg17.png") repeat scroll left top #f8f8f8;
+	background: #f8f8f8;
 	margin-top: 15px;
 }
 .service-section1 span {
@@ -11968,7 +11968,7 @@ button.button span span {
 	padding: 0px 0px;
 }
 .add-banner1 {
-	background: url(../images/offer_banner1.png) no-repeat top left;
+	background: #0b3d91;
 	padding: 20% 0px!important;
 	color: #fff;
 	text-align: center;
@@ -11981,7 +11981,7 @@ button.button span span {
 }
 
 .offer {
-	background: url(../images/offer-bg.png) no-repeat top left;
+	background: #0b3d91;
 	color: #fff;
 	text-align: center;
 	padding: 20% 0px!important;
@@ -13268,4 +13268,3 @@ select#shipping-address-select {
     font-size: 24px;
     margin-left: 50px;
 }
-

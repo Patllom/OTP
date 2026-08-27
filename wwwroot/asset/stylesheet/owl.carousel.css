@@ -52,7 +52,8 @@
 }
 /* mouse grab icon */
 .grabbing {
-	cursor: url(grabbing.png) 8 8, move;
+	cursor: move;
+	cursor: grabbing;
 }
 /* fix */
 .owl-carousel .owl-wrapper, .owl-carousel .owl-item {
