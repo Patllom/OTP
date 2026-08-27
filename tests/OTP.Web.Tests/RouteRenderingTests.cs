@@ -54,24 +54,91 @@ public sealed class RouteRenderingTests : IClassFixture<WebApplicationFactory<Pr
         Assert.NotEmpty(await response.Content.ReadAsByteArrayAsync());
     }
 
+    public static TheoryData<string, string[]> LocalPageImageAssets => new()
+    {
+        {
+            "/",
+            [
+                "/asset/images/production/home-objective-1.png",
+                "/asset/images/production/home-objective-2.jpg",
+                "/asset/images/production/home-objective-3.jpg"
+            ]
+        },
+        {
+            "/Home/knowledgetech",
+            []
+        },
+        {
+            "/Home/projectresult",
+            ["/asset/images/production/project-result.png"]
+        }
+    };
+
+    public static TheoryData<string> ProductionImageAssets => new()
+    {
+        "/asset/images/production/home-objective-1.png",
+        "/asset/images/production/home-objective-2.jpg",
+        "/asset/images/production/home-objective-3.jpg",
+        "/asset/images/production/home-news-1.png",
+        "/asset/images/production/home-news-2.png",
+        "/asset/images/production/home-news-3.jpg",
+        "/asset/images/production/home-news-4.jpg",
+        "/asset/images/production/home-news-5.jpg",
+        "/asset/images/production/home-news-6.jpg",
+        "/asset/images/production/knowledge-overview.png",
+        "/asset/images/production/project-result.png"
+    };
+
     [Theory]
-    [InlineData("/")]
-    [InlineData("/Home/knowledgetech")]
-    [InlineData("/Home/projectresult")]
-    public async Task PageImagesAreServedFromLocalAssets(string path)
+    [MemberData(nameof(LocalPageImageAssets))]
+    public async Task PageImagesAreServedFromLocalAssets(string path, string[] expectedImageUrls)
     {
         var response = await _client.GetAsync(path);
         var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
-        var externalImageUrls = Regex.Matches(
+        var imageUrls = Regex.Matches(
                 html,
-                "<img\\b[^>]*\\bsrc=[\\\"'](?<url>https?://[^\\\"']+)[\\\"']",
+                "<img\\b[^>]*\\bsrc=[\\\"'](?<url>[^\\\"']+)[\\\"']",
                 RegexOptions.IgnoreCase)
             .Select(match => match.Groups["url"].Value)
+            .Select(url => url.StartsWith("~/", StringComparison.Ordinal) ? url[1..] : url)
+            .ToArray();
+        var externalImageUrls = imageUrls
+            .Where(url => url.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+                || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             .ToArray();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Empty(externalImageUrls);
+
+        foreach (var imageUrl in expectedImageUrls)
+        {
+            Assert.Contains(imageUrl, imageUrls);
+
+            var imageResponse = await _client.GetAsync(imageUrl);
+            Assert.Equal(HttpStatusCode.OK, imageResponse.StatusCode);
+            Assert.Equal(ExpectedImageMediaType(imageUrl), imageResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
+        }
     }
+
+    [Theory]
+    [MemberData(nameof(ProductionImageAssets))]
+    public async Task ProductionImageAssetIsServed(string imageUrl)
+    {
+        var imageResponse = await _client.GetAsync(imageUrl);
+
+        Assert.Equal(HttpStatusCode.OK, imageResponse.StatusCode);
+        Assert.Equal(ExpectedImageMediaType(imageUrl), imageResponse.Content.Headers.ContentType?.MediaType);
+        Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
+    }
+
+    private static string ExpectedImageMediaType(string imageUrl) =>
+        Path.GetExtension(imageUrl).ToLowerInvariant() switch
+        {
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            _ => throw new ArgumentOutOfRangeException(nameof(imageUrl), imageUrl, "Unsupported image extension")
+        };
 
     [Fact]
     public async Task EventPicturePageRendersEveryWorkshopPhotoFromLocalAssets()
