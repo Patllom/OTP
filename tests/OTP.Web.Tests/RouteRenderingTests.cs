@@ -132,6 +132,57 @@ public sealed class RouteRenderingTests : IClassFixture<WebApplicationFactory<Pr
         Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
     }
 
+    [Fact]
+    public async Task KnowledgeTechnologyPageRendersSkillsDevelopmentGalleriesInOrder()
+    {
+        var galleryPhotoCounts = new[]
+        {
+            (GalleryNumber: 2, PhotoCount: 13),
+            (GalleryNumber: 3, PhotoCount: 14),
+            (GalleryNumber: 4, PhotoCount: 15),
+            (GalleryNumber: 5, PhotoCount: 13)
+        };
+
+        var pageResponse = await _client.GetAsync("/Home/knowledgetech");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+
+        var previousHeadingIndex = html.IndexOf(
+            "การพัฒนาทักษะความรู้ ครั้งที่ 1",
+            StringComparison.Ordinal);
+        Assert.True(previousHeadingIndex >= 0);
+
+        foreach (var gallery in galleryPhotoCounts)
+        {
+            var heading = $"การพัฒนาทักษะความรู้ ครั้งที่ {gallery.GalleryNumber}";
+            var headingIndex = html.IndexOf(heading, StringComparison.Ordinal);
+
+            Assert.True(
+                headingIndex > previousHeadingIndex,
+                $"Expected {heading} to appear after the preceding gallery.");
+            previousHeadingIndex = headingIndex;
+
+            for (var photoNumber = 1; photoNumber <= gallery.PhotoCount; photoNumber++)
+            {
+                var photoPath = $"/asset/images/knowledgetech/sub{gallery.GalleryNumber}/{photoNumber}.jpg";
+                var altText = $"{heading} ภาพที่ {photoNumber}";
+
+                Assert.Contains(
+                    $"href=\"{photoPath}\" aria-label=\"เปิด{altText}\"",
+                    html);
+                Assert.Contains(
+                    $"src=\"{photoPath}\" alt=\"{altText}\" loading=\"lazy\"",
+                    html);
+
+                var photoResponse = await _client.GetAsync(photoPath);
+                Assert.Equal(HttpStatusCode.OK, photoResponse.StatusCode);
+                Assert.Equal("image/jpeg", photoResponse.Content.Headers.ContentType?.MediaType);
+                Assert.NotEmpty(await photoResponse.Content.ReadAsByteArrayAsync());
+            }
+        }
+    }
+
     private static string ExpectedImageMediaType(string imageUrl) =>
         Path.GetExtension(imageUrl).ToLowerInvariant() switch
         {
@@ -232,6 +283,154 @@ public sealed class RouteRenderingTests : IClassFixture<WebApplicationFactory<Pr
             Assert.Equal(HttpStatusCode.OK, photoResponse.StatusCode);
             Assert.Equal("image/jpeg", photoResponse.Content.Headers.ContentType?.MediaType);
             Assert.NotEmpty(await photoResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
+
+    [Fact]
+    public async Task EventPicturePageRendersThirdWorkshopBeforeTrainingGalleries()
+    {
+        string[] workshopPhotoNames =
+        [
+            "workshop3-01.jpg",
+            "workshop3-02.jpg",
+            "workshop3-03.jpg",
+            "workshop3-04.jpg",
+            "workshop3-05.jpg",
+            "workshop3-06.jpg",
+            "workshop3-07.jpg",
+            "workshop3-08.jpg",
+            "workshop3-09.jpg",
+            "workshop3-10.jpg",
+            "workshop3-11.jpg",
+            "workshop3-12.jpg",
+            "workshop3-13.jpg",
+            "workshop3-14.jpg",
+            "workshop3-15.jpg",
+            "workshop3-16.jpg",
+            "workshop3-17.jpg"
+        ];
+
+        var pageResponse = await _client.GetAsync("/Home/eventpic");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+
+        var workshop2HeadingIndex = html.IndexOf("การประชุมเชิงปฏิบัติการ ครั้งที่ 2", StringComparison.Ordinal);
+        var workshop3HeadingIndex = html.IndexOf("การประชุมเชิงปฏิบัติการ ครั้งที่ 3", StringComparison.Ordinal);
+        var firstTrainingHeadingIndex = html.IndexOf("การฝึกอบรม ครั้งที่ 1", StringComparison.Ordinal);
+        var secondTrainingHeadingIndex = html.IndexOf("การฝึกอบรม ครั้งที่ 2", StringComparison.Ordinal);
+
+        Assert.True(workshop2HeadingIndex >= 0);
+        Assert.True(workshop3HeadingIndex > workshop2HeadingIndex);
+        Assert.True(firstTrainingHeadingIndex > workshop3HeadingIndex);
+        Assert.True(secondTrainingHeadingIndex > firstTrainingHeadingIndex);
+
+        for (var index = 0; index < workshopPhotoNames.Length; index++)
+        {
+            var photoName = workshopPhotoNames[index];
+            var photoPath = $"/asset/images/event/workshop3/{photoName}";
+
+            Assert.Contains(
+                $"src=\"{photoPath}\" alt=\"การประชุมเชิงปฏิบัติการ ครั้งที่ 3 ภาพที่ {index + 1}\"",
+                html);
+            Assert.Contains($"href=\"{photoPath}\"", html);
+
+            var photoResponse = await _client.GetAsync(photoPath);
+            Assert.Equal(HttpStatusCode.OK, photoResponse.StatusCode);
+            Assert.Equal("image/jpeg", photoResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await photoResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
+
+    [Fact]
+    public async Task EventPicturePageRendersTrainingGalleriesAfterSecondWorkshop()
+    {
+        string[] firstTrainingPhotoNames =
+        [
+            "training1-01.jpg",
+            "training1-02.jpg",
+            "training1-03.jpg",
+            "training1-04.jpg",
+            "training1-05.jpg",
+            "training1-06.jpg",
+            "training1-07.jpg",
+            "training1-08.jpg",
+            "training1-09.jpg",
+            "training1-10.jpg",
+            "training1-11.jpg",
+            "training1-12.jpg",
+            "training1-13.jpg",
+            "training1-14.jpg",
+            "training1-15.jpg",
+            "training1-16.jpg",
+            "training1-17.jpg",
+            "training1-18.jpg",
+            "training1-19.jpg",
+            "training1-20.jpg",
+            "training1-21.jpg",
+            "training1-22.jpg",
+            "training1-23.jpg",
+            "training1-24.jpg",
+            "training1-25.jpg",
+            "training1-26.jpg"
+        ];
+        string[] secondTrainingPhotoNames =
+        [
+            "training2-01.jpg",
+            "training2-02.jpg",
+            "training2-03.jpg",
+            "training2-04.jpg",
+            "training2-05.jpg",
+            "training2-06.jpg",
+            "training2-07.jpg",
+            "training2-08.jpg",
+            "training2-09.jpg",
+            "training2-10.jpg",
+            "training2-11.jpg",
+            "training2-12.jpg",
+            "training2-13.jpg",
+            "training2-14.jpg",
+            "training2-15.jpg",
+            "training2-16.jpg",
+            "training2-17.jpg",
+            "training2-18.jpg"
+        ];
+
+        var pageResponse = await _client.GetAsync("/Home/eventpic");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+
+        var workshop2HeadingIndex = html.IndexOf("การประชุมเชิงปฏิบัติการ ครั้งที่ 2", StringComparison.Ordinal);
+        var firstTrainingHeadingIndex = html.IndexOf("การฝึกอบรม ครั้งที่ 1", StringComparison.Ordinal);
+        var secondTrainingHeadingIndex = html.IndexOf("การฝึกอบรม ครั้งที่ 2", StringComparison.Ordinal);
+
+        Assert.True(workshop2HeadingIndex >= 0);
+        Assert.True(firstTrainingHeadingIndex > workshop2HeadingIndex);
+        Assert.True(secondTrainingHeadingIndex > firstTrainingHeadingIndex);
+
+        var galleries = new[]
+        {
+            (Heading: "การฝึกอบรม ครั้งที่ 1", Folder: "training1", PhotoNames: firstTrainingPhotoNames),
+            (Heading: "การฝึกอบรม ครั้งที่ 2", Folder: "training2", PhotoNames: secondTrainingPhotoNames)
+        };
+
+        foreach (var gallery in galleries)
+        {
+            for (var index = 0; index < gallery.PhotoNames.Length; index++)
+            {
+                var photoPath = $"/asset/images/event/{gallery.Folder}/{gallery.PhotoNames[index]}";
+
+                Assert.Contains(
+                    $"src=\"{photoPath}\" alt=\"{gallery.Heading} ภาพที่ {index + 1}\"",
+                    html);
+                Assert.Contains($"href=\"{photoPath}\"", html);
+
+                var photoResponse = await _client.GetAsync(photoPath);
+                Assert.Equal(HttpStatusCode.OK, photoResponse.StatusCode);
+                Assert.Equal("image/jpeg", photoResponse.Content.Headers.ContentType?.MediaType);
+                Assert.NotEmpty(await photoResponse.Content.ReadAsByteArrayAsync());
+            }
         }
     }
 
@@ -366,5 +565,80 @@ public sealed class RouteRenderingTests : IClassFixture<WebApplicationFactory<Pr
             Assert.Equal("image/png", imageResponse.Content.Headers.ContentType?.MediaType);
             Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
         }
+    }
+
+    public static TheoryData<int, string[]> NewProjectNewsIssues => new()
+    {
+        { 21, ["1.jpg", "2.jpg"] },
+        { 22, ["1.jpg", "2.jpg"] },
+        { 23, ["1.jpg", "2.jpg", "3.jpg"] }
+    };
+
+    [Theory]
+    [MemberData(nameof(NewProjectNewsIssues))]
+    public async Task InformationPageRendersNewProjectNewsIssueFromLocalAssets(
+        int issueNumber,
+        string[] issuePageNames)
+    {
+        var pageResponse = await _client.GetAsync("/Home/information");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+        var issueTitle = $"ข่าวประชาสัมพันธ์โครงการ ฉบับที่ {issueNumber}";
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+        Assert.Contains(issueTitle, html);
+        Assert.Contains($"href=\"#m{issueNumber}-modal\"", html);
+        Assert.Contains($"id=\"m{issueNumber}-modal\"", html);
+        Assert.Contains($"aria-label=\"ปิด{issueTitle}\"", html);
+        Assert.Contains($"#m{issueNumber}-modal:target", html);
+        Assert.Contains(
+            $"src=\"/asset/images/event/m{issueNumber}/1.jpg\" alt=\"{issueTitle}\" style=\"width:100%;height:250px;\"",
+            html);
+
+        for (var pageIndex = 0; pageIndex < issuePageNames.Length; pageIndex++)
+        {
+            var pageName = issuePageNames[pageIndex];
+            var pageNumber = pageIndex + 1;
+            var pagePath = $"/asset/images/event/m{issueNumber}/{pageName}";
+
+            Assert.Contains(
+                $"src=\"{pagePath}\" alt=\"{issueTitle} หน้า {pageNumber}\"",
+                html);
+
+            var imageResponse = await _client.GetAsync(pagePath);
+            Assert.Equal(HttpStatusCode.OK, imageResponse.StatusCode);
+            Assert.Equal("image/jpeg", imageResponse.Content.Headers.ContentType?.MediaType);
+            Assert.NotEmpty(await imageResponse.Content.ReadAsByteArrayAsync());
+        }
+    }
+
+    [Fact]
+    public async Task InformationPageGroupsNewestIssueCardsWithoutVisualGaps()
+    {
+        const string rowMarker = "class=\"slider-items slider-width-col4 products-grid\"";
+        var pageResponse = await _client.GetAsync("/Home/information");
+        var html = WebUtility.HtmlDecode(await pageResponse.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, pageResponse.StatusCode);
+
+        int CardRowStart(int issueNumber)
+        {
+            var cardPosition = html.IndexOf($"href=\"#m{issueNumber}-modal\"", StringComparison.Ordinal);
+            Assert.True(cardPosition >= 0, $"Issue {issueNumber} card was not rendered.");
+
+            var rowPosition = html.LastIndexOf(rowMarker, cardPosition, StringComparison.Ordinal);
+            Assert.True(rowPosition >= 0, $"Issue {issueNumber} card was not inside a product row.");
+            return rowPosition;
+        }
+
+        var row19 = CardRowStart(19);
+        var row20 = CardRowStart(20);
+        var row21 = CardRowStart(21);
+        var row22 = CardRowStart(22);
+        var row23 = CardRowStart(23);
+
+        Assert.Equal(row19, row20);
+        Assert.Equal(row19, row21);
+        Assert.NotEqual(row21, row22);
+        Assert.Equal(row22, row23);
     }
 }

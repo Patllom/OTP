@@ -187,5 +187,50 @@
         
     </div>
 
+    <div class="row " style="margin-top:30px;">
+        <div class="col-md-12">
+            <h4 class="text-center">การประชุมเชิงปฏิบัติการ ครั้งที่ 3</h4>
+        </div>
+
+        @for (var workshop3PhotoIndex = 1; workshop3PhotoIndex <= 17; workshop3PhotoIndex++)
+        {
+            var workshop3PhotoPath = Url.Content($"~/asset/images/event/workshop3/workshop3-{workshop3PhotoIndex:00}.jpg");
+
+            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding: 3px;">
+                <a href="@workshop3PhotoPath"><img class="card-img-top img-rounded" src="@workshop3PhotoPath" alt="การประชุมเชิงปฏิบัติการ ครั้งที่ 3 ภาพที่ @workshop3PhotoIndex" style="width:100%;height:150px;object-fit:cover;object-position:center;"></a>
+            </div>
+        }
+    </div>
+
+    <div class="row " style="margin-top:30px;">
+        <div class="col-md-12">
+            <h4 class="text-center">การฝึกอบรม ครั้งที่ 1</h4>
+        </div>
+
+        @for (var training1PhotoIndex = 1; training1PhotoIndex <= 26; training1PhotoIndex++)
+        {
+            var training1PhotoPath = Url.Content($"~/asset/images/event/training1/training1-{training1PhotoIndex:00}.jpg");
+
+            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding: 3px;">
+                <a href="@training1PhotoPath"><img class="card-img-top img-rounded" src="@training1PhotoPath" alt="การฝึกอบรม ครั้งที่ 1 ภาพที่ @training1PhotoIndex" style="width:100%;height:150px;object-fit:cover;object-position:center;"></a>
+            </div>
+        }
+    </div>
+
+    <div class="row " style="margin-top:30px;">
+        <div class="col-md-12">
+            <h4 class="text-center">การฝึกอบรม ครั้งที่ 2</h4>
+        </div>
+
+        @for (var training2PhotoIndex = 1; training2PhotoIndex <= 18; training2PhotoIndex++)
+        {
+            var training2PhotoPath = Url.Content($"~/asset/images/event/training2/training2-{training2PhotoIndex:00}.jpg");
+
+            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding: 3px;">
+                <a href="@training2PhotoPath"><img class="card-img-top img-rounded" src="@training2PhotoPath" alt="การฝึกอบรม ครั้งที่ 2 ภาพที่ @training2PhotoIndex" style="width:100%;height:150px;object-fit:cover;object-position:center;"></a>
+            </div>
+        }
+    </div>
+
 
 </div>
