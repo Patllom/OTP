@@ -2,6 +2,15 @@
 
 เอกสารนี้กำหนดขอบเขตความปลอดภัยสำหรับนำ OTP ขึ้น production หลัง migration เป็น ASP.NET Core MVC บน .NET 10 เอกสารนี้ไม่ใช่ deployment และไม่ได้ออก certificate หรือกำหนด hosting provider ให้โปรเจกต์
 
+## Environment และ Hosting Decision
+
+| Environment | Platform | Runtime boundary |
+| --- | --- | --- |
+| Development / local preview | macOS | Kestrel ผ่าน `scripts/run.sh` หรือ `dotnet run` |
+| Production | Windows Server | IIS พร้อม .NET Hosting Bundle และ ASP.NET Core Module v2 |
+
+ทีมพัฒนาทำงานหลักบน Mac ส่วน Windows scripts ยังคงเก็บไว้สำหรับ compatibility verification และการตรวจสอบเฉพาะฝั่ง Windows การ deploy production ต้องใช้ Release publish output ไม่ใช่ source tree หรือคำสั่ง `dotnet run`
+
 ## Local Development
 
 `scripts/run.sh` และ `scripts/run.ps1` กำหนด `ASPNETCORE_ENVIRONMENT=Development` เฉพาะเมื่อผู้เรียกยังไม่ได้กำหนด environment เพื่อให้ local HTTP preview ใช้ development behavior ตามเจตนา
@@ -25,20 +34,22 @@ $env:ASPNETCORE_ENVIRONMENT = 'Production'
 
 ## Supported Production Boundary
 
-production ที่รองรับต้องใช้ trusted reverse proxy หรือ managed edge เป็น public endpoint:
+production target ของโครงการคือ IIS บน Windows Server:
 
 ```text
-Browser -- HTTPS --> Trusted reverse proxy / managed edge -- private HTTP or HTTPS --> Kestrel
+Browser -- HTTPS --> IIS + ASP.NET Core Module v2 --> OTP ASP.NET Core application
 ```
 
-- Public HTTP ต้อง redirect ไป HTTPS ที่ edge
-- Edge ต้องจัดการ certificate และ HSTS สำหรับ public origin
-- Kestrel ต้อง bind เฉพาะ loopback หรือ private network ที่ไม่เปิดตรงสู่อินเทอร์เน็ต
-- กำหนด `ASPNETCORE_ENVIRONMENT=Production` ที่ deployment environment
-- ตรวจและจำกัด Host header ที่ edge
-- ห้ามเชื่อ `X-Forwarded-*` จากอินเทอร์เน็ตโดยไม่มี trusted proxy boundary
+- ติดตั้ง IIS ก่อน แล้วติดตั้ง .NET 10 Hosting Bundle บน Windows Server
+- Public HTTP ต้อง redirect ไป HTTPS ที่ IIS หรือ trusted edge ที่อยู่หน้า IIS
+- IIS หรือ trusted edge ต้องจัดการ certificate และ HSTS สำหรับ public origin
+- ใช้ Application Pool สำหรับเว็บไซต์และกำหนด `No Managed Code`
+- กำหนด `ASPNETCORE_ENVIRONMENT=Production` ที่ Windows Server
+- ตรวจและจำกัด Host header ที่ IIS หรือ trusted edge
+- ห้ามเปิด Kestrel หรือ `dotnet run` เป็น public production endpoint
+- หากมี load balancer/CDN/reverse proxy อยู่หน้า IIS ห้ามเชื่อ `X-Forwarded-*` โดยไม่มี trusted proxy boundary
 
-`Program.cs` ยังใช้ production exception handler และ `UseHsts()` แต่ไม่มี `UseHttpsRedirection()` หรือ `UseForwardedHeaders()` แบบกว้าง เพราะ repository ยังไม่ทราบ hosting target, proxy IP หรือ trusted network จริง การเปิด forwarded headers โดยไม่จำกัด proxy ทำให้เกิด header spoofing ได้
+`Program.cs` ใช้ production exception handler และ `UseHsts()` แต่ไม่มี `UseHttpsRedirection()` หรือ `UseForwardedHeaders()` แบบกว้าง การ redirect หลักจึงต้องกำหนดที่ IIS และถ้ามี proxy เพิ่มเติมอยู่หน้า IIS ต้องระบุ proxy IP หรือ trusted network จริงก่อนเปิด forwarded headers เพื่อป้องกัน header spoofing
 
 หาก production feature ต้องใช้ original scheme/client IP เช่น secure redirects, authentication หรือ absolute URL generation ให้เพิ่ม deployment-specific configuration ดังนี้ใน step แยกต่างหาก:
 
@@ -52,7 +63,7 @@ Browser -- HTTPS --> Trusted reverse proxy / managed edge -- private HTTP or HTT
 
 ## Deployment Acceptance Checklist
 
-- [ ] Hosting target และ reverse proxy ถูกระบุชื่อ/รุ่น
+- [ ] ระบุ Windows Server, IIS และ .NET Hosting Bundle เวอร์ชันจริง
 - [ ] Public HTTP redirect ไป HTTPS
 - [ ] HTTPS certificate chain ผ่านและมี renewal plan
 - [ ] HSTS ถูกส่งจาก edge หรือ application ที่รับรู้ HTTPS scheme ถูกต้อง

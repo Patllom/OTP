@@ -28,7 +28,7 @@
             </div>*@
         <!--<div class="col-md-3">
             <div class="card" style="width: 25rem;">
-                <img class="card-img-top img-rounded" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s" style="width:100%;height:300px;object-fit:cover;object-position:center;">
+                <img class="card-img-top img-rounded" src="~/asset/images/production/knowledge-overview.png" style="width:100%;height:300px;object-fit:cover;object-position:center;">
                 <div class="card-body">
                     <h4 class="card-title text-center" style="font-size:16px;">การถ่ายทอดองค์ความรู้และเทคโนโลยี ครั้งที่ 1 (อยู่ระหว่างดำเนินการ)</h4>
                 </div>
@@ -97,5 +97,35 @@
     </div>
 </div>
 
+@{
+    var skillsDevelopmentGalleries = new[]
+    {
+        new { Number = 2, PhotoCount = 13 },
+        new { Number = 3, PhotoCount = 14 },
+        new { Number = 4, PhotoCount = 15 },
+        new { Number = 5, PhotoCount = 13 }
+    };
+}
+
+@foreach (var gallery in skillsDevelopmentGalleries)
+{
+    var heading = $"การพัฒนาทักษะความรู้ ครั้งที่ {gallery.Number}";
+
+    <div class="row" style="margin-top:30px;margin-bottom:30px;">
+        <div class="col-md-12">
+            <h4 class="text-center">@heading</h4>
+        </div>
+
+        @for (var photoNumber = 1; photoNumber <= gallery.PhotoCount; photoNumber++)
+        {
+            var photoPath = $"/asset/images/knowledgetech/sub{gallery.Number}/{photoNumber}.jpg";
+            var altText = $"{heading} ภาพที่ {photoNumber}";
+
+            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding: 3px;">
+                <a href="@photoPath" aria-label="@($"เปิด{altText}")"> <img class="card-img-top img-rounded" src="@photoPath" alt="@altText" loading="lazy" style="width:100%;height:150px;object-fit:cover;object-position:center;"></a>
+            </div>
+        }
+    </div>
+}
 
 </div>

@@ -2,6 +2,15 @@
 
 เว็บไซต์ OTP ใช้ ASP.NET Core MVC บน .NET 10 และใช้ codebase เดียวกันสำหรับ macOS และ Windows
 
+## รูปแบบสภาพแวดล้อมของโครงการ
+
+| งาน | ระบบปฏิบัติการ | วิธีรัน |
+| --- | --- | --- |
+| Development และ local preview | macOS | รันด้วย `./scripts/run.sh` หรือ `dotnet run` ผ่าน Kestrel |
+| Production | Windows Server | Publish แบบ Release แล้วให้ IIS รันผ่าน .NET Hosting Bundle / ASP.NET Core Module |
+
+ข้อตกลงหลักของทีมคือพัฒนาและตรวจงานประจำวันบน Mac แต่การทดสอบก่อนส่งมอบต้องไม่ทำให้ความเข้ากันได้กับ Windows เสียหาย ส่วน production ห้ามรันจาก source ด้วย `dotnet run`; ให้นำผลลัพธ์จาก `dotnet publish --configuration Release` ไปวางใน IIS Physical Path และกำหนด `ASPNETCORE_ENVIRONMENT=Production` บน Windows Server รายละเอียดด้าน HTTPS และขอบเขตเซิร์ฟเวอร์อยู่ใน [Production HTTPS Contract](docs/deployment/PRODUCTION_HTTPS.md)
+
 ## สิ่งที่ต้องติดตั้ง
 
 - .NET 10 SDK — โปรเจกต์กำหนด SDK `10.0.400` และยอมรับ patch ที่ใหม่กว่าใน feature band เดียวกันผ่าน `global.json`
@@ -85,7 +94,7 @@ $env:ASPNETCORE_URLS = 'http://127.0.0.1:5180'
 
 Run/verify scripts จะเปลี่ยน working directory ไปที่ project root ก่อนตรวจ SDK และเรียก `dotnet` เสมอ จึงสามารถเรียก script ด้วย absolute path จาก directory อื่นได้โดยยังใช้ SDK policy จาก `global.json` ของ repository นี้ เมื่อเรียกจาก PowerShell session โดยตรง scripts จะคืน working directory เดิมหลังทำงาน และ `run.ps1` จะคืนค่า `ASPNETCORE_ENVIRONMENT` เดิมด้วย
 
-Run scripts ใช้ `Development` เป็นค่าเริ่มต้นสำหรับ local preview แต่จะไม่ทับ `ASPNETCORE_ENVIRONMENT` ที่ผู้ใช้กำหนดไว้ production ต้องอยู่หลัง trusted reverse proxy/TLS termination ตาม [Production HTTPS Contract](docs/deployment/PRODUCTION_HTTPS.md); repository ยังไม่เปิด HTTPS redirect หรือเชื่อ forwarded headers โดยไม่มี deployment-specific proxy configuration
+Run scripts ใช้ `Development` เป็นค่าเริ่มต้นสำหรับ local preview แต่จะไม่ทับ `ASPNETCORE_ENVIRONMENT` ที่ผู้ใช้กำหนดไว้ production ใช้ IIS บน Windows Server เป็น hosting/TLS boundary ตาม [Production HTTPS Contract](docs/deployment/PRODUCTION_HTTPS.md); repository ยังไม่เปิด HTTPS redirect หรือเชื่อ forwarded headers โดยไม่มี deployment-specific proxy configuration
 
 ## ตรวจสอบด้วยคำสั่งมาตรฐาน
 

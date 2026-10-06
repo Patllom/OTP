@@ -217,3 +217,26 @@
 - **Navigation decision:** ตาม D-009 เลื่อน conversion จาก legacy URL concatenation ไป follow-up หลัง migration เพราะ links ปัจจุบัน render ได้และการเปลี่ยน link generation ก่อน merge อาจเปลี่ยน user-visible default-route URLs; follow-up ต้องเริ่มจาก rendered-link assertions
 - **Scope boundary:** ไม่แก้ controller/routes/UI/assets, ไม่อัปเดต PR description ใน code step นี้ และไม่ merge/release
 - **Rollback:** revert test commit `ee45c6a`, implementation commit `dcd87c3` และ final-cleanup documentation/whitespace commit โดย Step 1–3 ก่อนหน้ายังคงอยู่ครบ
+
+## 2026-08-27 — Environment Operating Model
+
+- **Decision:** Development และ local preview ทำบน macOS; production รันบน Windows Server ผ่าน IIS
+- **Development runtime:** ใช้ Kestrel ผ่าน `scripts/run.sh` หรือ `dotnet run` โดย workflow ประจำวันไม่พึ่ง IIS Express
+- **Production runtime:** ใช้ Release publish output กับ IIS, .NET Hosting Bundle และ ASP.NET Core Module v2 พร้อมกำหนด `ASPNETCORE_ENVIRONMENT=Production`
+- **Compatibility boundary:** คง Windows scripts และ Windows verification ไว้เพื่อป้องกัน regression แม้เครื่องพัฒนาหลักเป็น Mac
+- **Documentation:** เพิ่ม environment matrix ใน `README.md` และปรับ `docs/deployment/PRODUCTION_HTTPS.md` ให้ระบุ IIS บน Windows Server เป็น production target
+- **Scope boundary:** เป็นการบันทึก operating model เท่านั้น; ไม่แก้ application code, IIS server, certificate, deployment หรือ production data
+
+## 2026-08-27 — IIS Workshop 2 Image Filename Portability
+
+- **Approval:** ผู้ใช้อนุมัติให้แก้ปัญหารูป Workshop 2 ไม่แสดงบน Windows Server/IIS และให้ดำเนินการตรวจสอบกับสร้าง production package ใหม่จนเสร็จ
+- **Root cause:** ZIP production เดิมมีรูป Workshop 2 จำนวน 17 ไฟล์ที่ใช้ชื่อภาษาไทย แต่ archive entries ไม่ได้ตั้ง UTF-8 filename flag ทำให้ Windows อาจแตกชื่อไฟล์เป็น mojibake และ URL จาก Razor จึงหาไฟล์จริงไม่พบ
+- **Test-first RED:** เปลี่ยน regression expectation เป็นชื่อ ASCII `workshop2-01.jpg` ถึง `workshop2-17.jpg`; targeted test fail 1/1 เพราะ view ยังคง render ชื่อเดิม
+- **Implementation:** เปลี่ยนชื่อไฟล์ Workshop 2 ทั้ง 17 ไฟล์เป็น ASCII ตามลำดับและอัปเดต `Views/Home/eventpic.cshtml` ให้ render path ใหม่ โดยไม่เปลี่ยนภาพหรือรูปแบบ gallery
+- **Targeted GREEN:** `EventPicturePageRendersEverySecondWorkshopPhotoFromLocalAssets` ผ่าน 1/1 หลังแก้ path
+- **Full verification:** Release restore/build สำเร็จ, build 0 warnings/0 errors และ full test suite ผ่าน 41/41; `git diff --check` ผ่าน
+- **Filename audit:** `wwwroot` มี 416 ไฟล์และไม่มีชื่อไฟล์ non-ASCII; source/view/test ไม่มี reference ชื่อ Workshop 2 เดิมตกค้าง
+- **Production package:** สร้าง `OTP-PRODUCTION-IIS-C-inetpub-WEBWORK-OTP-20260827-081005.zip` สำหรับคัดลอกตรงไปยัง `C:\inetpub\WEBWORK\OTP`; ZIP SHA-256 คือ `28bab26c81c2c7927440f4cf63882b013124d8af1191e52c793100eb5bae7dd2`
+- **Archive verification:** `unzip -t` ผ่าน, internal manifest ผ่าน 545/545 ไฟล์, archive มี 0 non-ASCII filenames, มีรูป Workshop 2 ครบ 17 ไฟล์ และไม่มี wrapper directory ซ้อน
+- **Extracted-package smoke:** รันไฟล์ที่แตกจาก ZIP ด้วย environment Production; routes ผ่าน 11/11, local static assets ผ่าน 156/156 และ Workshop 2 JPEG URLs ผ่าน 17/17 ด้วย HTTP 200
+- **Deployment boundary:** ยังไม่ได้คัดลอกไฟล์ไปยัง Windows Server, แก้ IIS, commit, push หรือสร้าง PR; ผู้ดูแลต้องสำรองและหยุด Application Pool ก่อนแทนที่ไฟล์ production
